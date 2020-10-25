@@ -1,0 +1,5 @@
+Build/*
+Netvisix/Netvisix.pro.user
+build-Netvisix-Desktop-Debug/
+build-Netvisix-Desktop-Profile/
+build-Netvisix-Desktop-Release/
