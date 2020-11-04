@@ -59,7 +59,7 @@ namespace Netvisix {
     void NetEventManager::release() {
         if (instance != nullptr) {
             delete instance;
-            instance == nullptr;
+            instance = nullptr;
         }
     }
 

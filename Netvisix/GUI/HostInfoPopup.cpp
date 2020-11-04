@@ -19,6 +19,7 @@
 
 #include "HostInfoPopup.h"
 #include "NetView.h"
+#include "MainWindow.h"
 #include "ui_HostInfoPopup.h"
 #include "Net/Host.h"
 #include "Net/NetUtil.h"
@@ -74,27 +75,15 @@ namespace Netvisix {
         QPoint pos = vHostPos + QPoint(offsetX, offsetY);
         move(pos);
 
-        fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
-        fixedFont.setPointSize(11);
-        fixedFontBold = QFontDatabase::systemFont(QFontDatabase::FixedFont);
-        fixedFontBold.setPointSize(11);
-        fixedFontBold.setBold(true);
-
-        ui->labelHostname->setFont(fixedFontBold);
-        ui->labelAddr->setFont(fixedFontBold);
-        ui->labelAddrField->setFont(fixedFont);
-
         NetView* nv = (NetView*) parent;
         if (vHost->getHost()->hostname != "") {
-            std::string hostname = "";
+            std::string hostname = "<b>" + vHost->getHost()->hostname + "</b>";
             if (vHost->getHost()->hostnameFromReverseDNSLookp) {
-                hostname += "(rDNS) ";
+                hostname = "(rDNS) " + hostname;
             }
-            hostname += vHost->getHost()->hostname;
             ui->labelHostname->setText(hostname.c_str());
         }
         else if (nv->getReverseDNSLookupEnabled() == false) {
-            ui->labelHostname->setFont(fixedFont);
             ui->labelHostname->setText("(rDNS disabled!)");
         }
 
@@ -117,15 +106,14 @@ namespace Netvisix {
 
         // byte counters
         ui->labelBytesSnt->move(ui->labelBytesSnt->pos().x(), ui->labelBytesSnt->pos().y() + heightAddition - 10);
-        ui->labelBytesSnt->setFont(fixedFont);
-
         ui->labelBytesRcv->move(ui->labelBytesRcv->pos().x(), ui->labelBytesRcv->pos().y() + heightAddition - 10);
-        ui->labelBytesRcv->setFont(fixedFont);
 
         updateBytes();
 
         // statistic button
         ui->buttonStatistic->move(ui->buttonStatistic->pos().x(), ui->buttonStatistic->pos().y() + heightAddition);
+
+        MainWindow::updateAllWidgetFonts();
     }
 
     HostInfoPopup::~HostInfoPopup() {
@@ -138,12 +126,10 @@ namespace Netvisix {
         QLabel* labelType = new QLabel(type.c_str(), this);
         int typePosX = ui->labelAddr->pos().x();
         labelType->move(typePosX, posY);
-        labelType->setFont(fixedFontBold);
 
         QLabel* labelAddr = new QLabel(addr.c_str(), this);
         int addrPosX = ui->labelAddrField->pos().x();
         labelAddr->move(addrPosX, posY);
-        labelAddr->setFont(fixedFont);
     }
 
     void HostInfoPopup::paintEvent(QPaintEvent* event) {
@@ -179,20 +165,14 @@ void Netvisix::HostInfoPopup::on_buttonStatistic_clicked() {
     Host* host = vHost->getHost();
     std::string title = "";
 
-    if (host->getAddrListIPv4().empty() == false) {
+    if (host->hostname.empty() == false) {
+        title += host->hostname;
+    } else if (host->getAddrListIPv4().empty() == false) {
         title += host->getAddrListIPv4().at(0).to_string();
-    }
-    if (host->getAddrListIPv6().empty() == false) {
-        if (title != "") {
-            title += " | ";
-        }
+    } else if (host->getAddrListIPv6().empty() == false) {
         title += host->getAddrListIPv6().at(0).to_string();
-    }
-    if (host->addrHW != NetUtil::zeroAddrHW) {
-        if (title != "") {
-            title += " ";
-        }
-        title += "(" + host->addrHW.to_string() + ")";
+    } else if (host->addrHW != NetUtil::zeroAddrHW) {
+        title += host->addrHW.to_string();
     }
 
     StatisticPopup* statisticPopup = new StatisticPopup(vHost->getHost()->statistic, title, parentWidget()->parentWidget()->parentWidget());

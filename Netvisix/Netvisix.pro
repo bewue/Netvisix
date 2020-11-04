@@ -53,7 +53,7 @@ FORMS += MainWindow.ui \
 RESOURCES += \
     app.qrc
 
-
+# linux
 unix:!macx: INCLUDEPATH += $$PWD/../libtins/include
 unix:!macx: DEPENDPATH += $$PWD/../libtins/include
 
@@ -62,11 +62,14 @@ unix:!macx: PRE_TARGETDEPS += $$PWD/../libtins/libtins.a
 
 unix:!macx: LIBS += -lpcap
 
-
+# win
+win32: DEFINES += TINS_STATIC
 win32: DEFINES += WIN32_LEAN_AND_MEAN
 
-win32: LIBS += -LE:/Build/WpdPack/Lib/ -lwpcap -lws2_32 -liphlpapi
-win32: INCLUDEPATH += E:/Build/WpdPack/Include
+win32: INCLUDEPATH += $$PWD\..\libtins-win\include
+win32: LIBS += -L$$PWD\..\libtins-win -ltins
 
-win32: LIBS += -LE:/Build/libtins/lib/ -ltins
-win32: INCLUDEPATH += E:/Build/libtins/include
+win32: INCLUDEPATH += C:\Users\benjamin\Documents\Build\4.1.2-WpdPack\WpdPack\Include
+win32: LIBS += -LC:\Users\benjamin\Documents\Build\4.1.2-WpdPack\WpdPack\Lib -lwpcap
+
+win32: LIBS += -lws2_32 -liphlpapi

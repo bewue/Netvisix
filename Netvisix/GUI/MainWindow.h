@@ -41,6 +41,8 @@ namespace Netvisix {
         explicit MainWindow(QWidget *parent = 0);
         virtual ~MainWindow();
 
+        static void updateAllWidgetFonts();
+
         Ui::MainWindow* getUI() { return this->ui; }
 
         void showInfoPopup(std::string text);
@@ -90,6 +92,12 @@ namespace Netvisix {
         float widgetLegendWidth;
 
         std::vector<Tins::NetworkInterface> interfaces;
+
+#ifdef Q_OS_WIN
+        const float FONT_SIZE = 9;
+#else
+        const float FONT_SIZE = 10;
+#endif
     };
 
 } // namespace Netvisix

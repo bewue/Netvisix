@@ -42,7 +42,9 @@ namespace Netvisix {
             QMainWindow(parent),
             ui(new Ui::MainWindow) {
 
-        QApplication::setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+        QFont font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+        font.setPointSize(MainWindow::FONT_SIZE);
+        QApplication::setFont(font);
 
         ui->setupUi(this);
 
@@ -79,6 +81,8 @@ namespace Netvisix {
         QSize winSize = QSize(screenSize.width() * 0.75f, screenSize.height() * 0.85f);
 
         setGeometry((screenSize.width() - winSize.width()) / 2, (screenSize.height() - winSize.height()) * 0.35f, winSize.width(), winSize.height());
+
+        MainWindow::updateAllWidgetFonts();
     }
 
     MainWindow::~MainWindow() {
@@ -86,6 +90,13 @@ namespace Netvisix {
         delete statusbarDisplay;
         delete ui;
         delete timer;
+    }
+
+    void MainWindow::updateAllWidgetFonts() {
+        foreach (QWidget *widget, QApplication::allWidgets()) {
+            widget->setFont(QApplication::font());
+            widget->update();
+        }
     }
 
     void MainWindow::closeEvent(QCloseEvent *ce) {
@@ -104,28 +115,30 @@ namespace Netvisix {
     }
 
     std::string MainWindow::getInterfaceListName(Tins::NetworkInterface networkInterface) {
-        std::string ifListName = "";
-
 #ifdef Q_OS_WIN
         Tins::NetworkInterface::Info info = networkInterface.addresses();
-        ifListName.append(info.ip_addr.to_string());
+        std::string ifListName = info.ip_addr.to_string();
         if (info.hw_addr != nullptr) {
-            ifListName += " (" + info.hw_addr.to_string() + ")";
+            ifListName += " [" + info.hw_addr.to_string() + "]";
         }
-#else
-        ifListName = networkInterface.name();
-#endif
-
         return ifListName;
+#else
+        return networkInterface.name();
+#endif
     }
 
     void MainWindow::updateInterfacesList() {
         interfaces.clear();
         ui->comboBoxInterfaces->clear();
 
-        Tins::NetworkInterface defaultInterface = Tins::NetworkInterface::default_interface();
-        interfaces.push_back(defaultInterface);
-        ui->comboBoxInterfaces->addItem(getInterfaceListName(defaultInterface).c_str());
+        Tins::NetworkInterface defaultInterface;
+        try {
+            defaultInterface = Tins::NetworkInterface::default_interface();
+            interfaces.push_back(defaultInterface);
+            ui->comboBoxInterfaces->addItem(getInterfaceListName(defaultInterface).c_str());
+        } catch (Tins::invalid_interface const &) {
+            //MainWindow::showInfoPopup("Not Connected?");
+        }
 
         std::vector<Tins::NetworkInterface> ifs = Tins::NetworkInterface::all();
         for (unsigned int i = 0; i < ifs.size(); i++) {
@@ -244,7 +257,7 @@ void Netvisix::MainWindow::on_buttonStartStopSniffing_clicked() {
 #ifdef Q_OS_WIN
             showInfoPopup(exceptionString);
 #else
-            showInfoPopup(exceptionString + "\r\n\r\n( Try to run " + T_APP_NAME + " with root privileges )");
+            showInfoPopup(exceptionString + "\r\n\r\nTry to run " + T_APP_NAME + " with root privileges.");
 #endif
             return;
         }
@@ -301,7 +314,7 @@ void Netvisix::MainWindow::on_actionInfo_triggered() {
             + "\r\n\r\n" + T_APP_NAME + " is licensed under the " + T_APP_LICENSE
             + "\r\n\r\nDeveloper: " + T_AUTHOR_NAME
             + "\r\nContact: " + T_AUTHOR_EMAIL
-            + "\r\nCode: " + T_CODE_URL;
+            + "\r\n\r\nCode: " + T_CODE_URL + "\r\n";
     msgBox.setText(text.c_str());
     msgBox.exec();
 }

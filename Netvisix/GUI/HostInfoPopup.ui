@@ -42,7 +42,7 @@
   <widget class="QLabel" name="labelAddrField">
    <property name="geometry">
     <rect>
-     <x>60</x>
+     <x>70</x>
      <y>30</y>
      <width>361</width>
      <height>20</height>
@@ -68,9 +68,9 @@
   <widget class="QPushButton" name="buttonStatistic">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>140</x>
      <y>85</y>
-     <width>101</width>
+     <width>141</width>
      <height>23</height>
     </rect>
    </property>

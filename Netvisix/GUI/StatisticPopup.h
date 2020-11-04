@@ -79,7 +79,7 @@ namespace Netvisix {
 
             const float START_POS_X = 10;
             const float START_POS_Y = 40;
-            const float OFFSET_X = 120;
+            const float OFFSET_X = 140;
             const float OFFSET_Y = 24;
     };
 

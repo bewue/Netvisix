@@ -34,13 +34,13 @@ namespace Netvisix {
 
         lastUpdateTime = 0;
 
-        labelHandledPacketsCount = CreateLabel();
+        labelHandledPacketsCount = new QLabel();
         mainWindow->getUI()->statusBar->addWidget(labelHandledPacketsCount);
 
-        labelVisibleHostsCount = CreateLabel();
+        labelVisibleHostsCount = new QLabel();
         mainWindow->getUI()->statusBar->addWidget(labelVisibleHostsCount);
 
-        labelFPS = CreateLabel();
+        labelFPS = new QLabel();
         mainWindow->getUI()->statusBar->addWidget(labelFPS);
 
         fpsCounter = 0;
@@ -51,15 +51,6 @@ namespace Netvisix {
         delete labelVisibleHostsCount;
         delete labelFPS;
 	}
-
-    QLabel* StatusbarDisplay::CreateLabel() {
-        QLabel* label = new QLabel();
-        QFont font = QFont();
-        font.setPointSize(10);
-        label->setFont(font);
-
-        return label;
-    }
 
     void StatusbarDisplay::updateStatusbar(quint64 dt) {
         fpsCounter++;

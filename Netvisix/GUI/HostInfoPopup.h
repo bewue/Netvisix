@@ -58,9 +58,6 @@ namespace Netvisix {
             Ui::HostInfoPopup *ui;
 
             VisibleHost* vHost;
-
-            QFont fixedFont;
-            QFont fixedFontBold;
     };
 
 } // namespace Netvisix

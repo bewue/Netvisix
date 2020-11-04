@@ -19,6 +19,7 @@
 
 #include "StatisticPopup.h"
 #include "ui_StatisticPopup.h"
+#include "MainWindow.h"
 #include "Net/NetStatistic.h"
 #include "Net/NetEvent.h"
 #include "Net/NetEventManager.h"
@@ -98,6 +99,8 @@ namespace Netvisix {
         ui->labelInfo->move(frameWidth / 2 - ui->labelInfo->width() / 2, frameHeight - 25);
 
         updateStatisticDisplay();
+
+        MainWindow::updateAllWidgetFonts();
     }
 
     StatisticPopup::~StatisticPopup() {
@@ -113,10 +116,6 @@ namespace Netvisix {
     void StatisticPopup::addItem(NetStatistic::Item *item, std::string name, int y) {
         float posY = START_POS_Y + y * OFFSET_Y;
 
-        QFont fontName = QFont();
-        fontName.setFamily("SansSerif");
-        fontName.setPointSize(11);
-        fontName.setBold(true);
         StatisticItem* sItem = new StatisticItem();
 
         sItem->item = item;
@@ -124,7 +123,6 @@ namespace Netvisix {
         sItem->labelName = new QLabel(name.c_str(), this);
         sItem->labelName->move(START_POS_X, posY);
         sItem->labelName->setStyleSheet("QLabel { color: rgb(70, 70, 130) }");
-        sItem->labelName->setFont(fontName);
 
         sItem->labelPacketsSnt = createCounterLabel(START_POS_X + 1 * OFFSET_X, posY);
         sItem->labelPacketsRcv = createCounterLabel(START_POS_X + 2 * OFFSET_X, posY);
@@ -135,28 +133,15 @@ namespace Netvisix {
     }
 
     void StatisticPopup::createColumnTitleLabel(float posX, float posY, std::string text) {
-        QFont font = QFont();
-        font.setFamily("SansSerif");
-        font.setPointSize(11);
-        font.setBold(true);
-
         QLabel* label = new QLabel(text.c_str(), this);
         label->move(posX, posY);
-        label->setFont(font);
         label->setFixedWidth(200);
         label->setStyleSheet("QLabel { color: rgb(70, 70, 130) }");
     }
 
     void StatisticPopup::createSubTitleLabel(float posX, float posY, std::string text) {
-        QFont font = QFont();
-        font.setFamily("SansSerif");
-        font.setPointSize(11);
-        font.setBold(true);
-        font.setItalic(true);
-
         QLabel* label = new QLabel(text.c_str(), this);
         label->move(posX, posY);
-        label->setFont(font);
         label->setFixedWidth(200);
         label->setStyleSheet("QLabel { color: rgb(130, 130, 180) }");
     }
@@ -172,14 +157,8 @@ namespace Netvisix {
     }
 
     QLabel* StatisticPopup::createCounterLabel(float posX, float posY) {
-        QFont font = QFont();
-        font.setFamily("SansSerif");
-        font.setPointSize(11);
-        font.setBold(true);
-
         QLabel* label = new QLabel(this);
         label->move(posX, posY);
-        label->setFont(font);
         label->setFixedWidth(200);
 
         return label;

@@ -16,15 +16,15 @@
   <widget class="QLabel" name="labelInfo">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>-50</x>
      <y>310</y>
-     <width>521</width>
+     <width>641</width>
      <height>20</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <pointsize>8</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
