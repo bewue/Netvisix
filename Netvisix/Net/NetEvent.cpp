@@ -26,9 +26,9 @@ namespace Netvisix {
     NetEvent::NetEvent() {
         size = 0;
 
-        l1Protocol = Protocol::UNKOWN;
-        l2Protocol = Protocol::UNKOWN;
-        l3Protocol = Protocol::UNKOWN;
+        l1Protocol = Protocol::Unkown;
+        l2Protocol = Protocol::Unkown;
+        l3Protocol = Protocol::Unkown;
 
         srcAddrHW = NetUtil::zeroAddrHW;
         dstAddrHW = NetUtil::zeroAddrHW;
@@ -52,32 +52,36 @@ namespace Netvisix {
         case Layer::L3:
             return l3Protocol;
         default:
-            return Protocol::UNKOWN;
+            return Protocol::Unkown;
         }
     }
 
     Protocol NetEvent::getTopLevelProtocol() {
-        if (l3Protocol != Protocol::UNKOWN) {
+        if (l3Protocol != Protocol::Unkown) {
             return l3Protocol;
         }
-        else if (l2Protocol != Protocol::UNKOWN) {
+        else if (l2Protocol != Protocol::Unkown) {
             return l2Protocol;
         }
-        else if (l1Protocol != Protocol::UNKOWN) {
+        else if (l1Protocol != Protocol::Unkown) {
             return l1Protocol;
         }
         else {
-            return Protocol::UNKOWN;
+            return Protocol::Unkown;
         }
     }
 
     std::string NetEvent::getProtocolString(Protocol protocol) {
         switch (protocol) {
-        case Protocol::UNKOWN:
-            return "UNKOWN";
+        case Protocol::Unkown:
+            return "Unkown";
+        case Protocol::OtherL2:
+            return "OtherL2";
+        case Protocol::OtherL3:
+            return "OtherL3";
 
-        case Protocol::ETHERNETII:
-            return "ETHERNETII";
+        case Protocol::EthernetII:
+            return "EthernetII";
 
         case Protocol::ARP:
             return "ARP";
@@ -85,13 +89,11 @@ namespace Netvisix {
             return "IPv4";
         case Protocol::IPv6:
             return "IPv6";
+
         case Protocol::ICMP:
             return "ICMP";
         case Protocol::ICMPv6:
             return "ICMPv6";
-        case Protocol::IGMP:
-            return "IGMP";
-
         case Protocol::TCP:
             return "TCP";
         case Protocol::UDP:
@@ -103,21 +105,11 @@ namespace Netvisix {
     }
 
     bool NetEvent::isIPv4() {
-        if (l2Protocol == Protocol::IPv4 || l2Protocol == Protocol::IGMP || l2Protocol == Protocol::ICMP) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (l2Protocol == Protocol::IPv4);
     }
 
     bool NetEvent::isIPv6() {
-        if (l2Protocol == Protocol::IPv6 || l2Protocol == Protocol::ICMPv6) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (l2Protocol == Protocol::IPv6);
     }
 
 } // namespace Netvisix

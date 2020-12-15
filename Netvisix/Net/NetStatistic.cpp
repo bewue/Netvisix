@@ -24,23 +24,22 @@ namespace Netvisix {
     NetStatistic::NetStatistic() {
         items = new std::vector<Item*>();
 
-        addProtocol(IPVersion::ALL, Layer::L1, Protocol::ETHERNETII);
-        addProtocol(IPVersion::ALL, Layer::L1, Protocol::UNKOWN);
-
-        // IPv4
+        addProtocol(IPVersion::ALL, Layer::L1, Protocol::EthernetII);
+        addProtocol(IPVersion::ALL, Layer::L1, Protocol::Unkown);
+        addProtocol(IPVersion::ALL, Layer::L2, Protocol::OtherL2);
         addProtocol(IPVersion::IPV4, Layer::L2, Protocol::ARP);
 
-        addProtocol(IPVersion::IPV4, Layer::L2, Protocol::ICMP);
-        addProtocol(IPVersion::IPV4, Layer::L2, Protocol::IGMP);
-
+        // IPv4
+        addProtocol(IPVersion::IPV4, Layer::L3, Protocol::ICMP);
         addProtocol(IPVersion::IPV4, Layer::L3, Protocol::TCP);
         addProtocol(IPVersion::IPV4, Layer::L3, Protocol::UDP);
+        addProtocol(IPVersion::IPV4, Layer::L3, Protocol::OtherL3);
 
         // IPv6
-        addProtocol(IPVersion::IPV6, Layer::L2, Protocol::ICMPv6);
-
+        addProtocol(IPVersion::IPV6, Layer::L3, Protocol::ICMPv6);
         addProtocol(IPVersion::IPV6, Layer::L3, Protocol::TCP);
         addProtocol(IPVersion::IPV6, Layer::L3, Protocol::UDP);
+        addProtocol(IPVersion::IPV6, Layer::L3, Protocol::OtherL3);
     }
 
     NetStatistic::~NetStatistic() {

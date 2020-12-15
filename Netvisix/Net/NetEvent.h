@@ -29,32 +29,26 @@ namespace Netvisix {
         L1,
         L2,
         L3,
-        L4
     };
 
     enum class Protocol {
-        UNKOWN,
+        Unkown,
 
         // layer 1
-        ETHERNETII,
+        EthernetII,
 
         // layer 2
         ARP,
         IPv4,
         IPv6,
-        ICMP,
-        ICMPv6,
-        IGMP,
+        OtherL2,
 
         // layer 3
+        ICMP,
+        ICMPv6,
         TCP,
         UDP,
-
-        // layer 4
-        DNS,
-        DHCP,
-        DHCPv6,
-        HTTP
+        OtherL3,
     };
 
     enum class AddrType {
@@ -85,7 +79,6 @@ namespace Netvisix {
             Protocol l1Protocol;
             Protocol l2Protocol;
             Protocol l3Protocol;
-            Protocol l4Protocol;
 
             Tins::HWAddress<6> srcAddrHW;
             Tins::HWAddress<6> dstAddrHW;

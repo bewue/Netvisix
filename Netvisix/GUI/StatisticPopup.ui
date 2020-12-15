@@ -13,29 +13,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="labelInfo">
-   <property name="geometry">
-    <rect>
-     <x>-50</x>
-     <y>310</y>
-     <width>641</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>8</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>( Received broadcasts and multicasts are not shown! )</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>

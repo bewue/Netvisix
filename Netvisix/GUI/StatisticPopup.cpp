@@ -60,7 +60,7 @@ namespace Netvisix {
         items = new std::vector<StatisticItem*>();
 
         float frameWidth = START_POS_X + 5 * OFFSET_X;
-        float frameHeight = START_POS_Y + 18 * OFFSET_Y + 10;
+        float frameHeight = START_POS_Y + 16 * OFFSET_Y + 20;
         setFixedSize(frameWidth, frameHeight);
 
         // gui layout
@@ -70,33 +70,30 @@ namespace Netvisix {
         createColumnTitleLabel(START_POS_X + 3 * OFFSET_X, columnTitlePosY, "BytesSnt");
         createColumnTitleLabel(START_POS_X + 4 * OFFSET_X, columnTitlePosY, "BytesRcv");
 
-        addItem(statistic->getItem(IPVersion::ALL, Protocol::ETHERNETII), "Frames", 0);
-        addItem(statistic->getItem(IPVersion::ALL, Protocol::UNKOWN), "Unkown", 1);
+        addItem(statistic->getItem(IPVersion::ALL, Protocol::EthernetII), "Frames", 0);
+        addItem(statistic->getItem(IPVersion::ALL, Protocol::Unkown), "Unkown", 1);
+        addItem(statistic->getItem(IPVersion::ALL, Protocol::OtherL2), "Other L2", 2);
+        addItem(statistic->getItem(IPVersion::IPV4, Protocol::ARP), "ARP", 3);
 
         // IPv4
-        float posY = START_POS_Y + 2.6f * OFFSET_Y;
+        float posY = START_POS_Y + 4.6f * OFFSET_Y;
         createSubTitleLabel(START_POS_X, posY, "IPv4");
         createLine(posY + 25);
 
-        addItem(statistic->getItem(IPVersion::IPV4, Protocol::ARP), "ARP", 4);
-
         addItem(statistic->getItem(IPVersion::IPV4, Protocol::ICMP), "ICMP", 6);
-        addItem(statistic->getItem(IPVersion::IPV4, Protocol::IGMP), "IGMP", 7);
-
-        addItem(statistic->getItem(IPVersion::IPV4, Protocol::TCP), "TCP", 9);
-        addItem(statistic->getItem(IPVersion::IPV4, Protocol::UDP), "UDP", 10);
+        addItem(statistic->getItem(IPVersion::IPV4, Protocol::TCP), "TCP", 7);
+        addItem(statistic->getItem(IPVersion::IPV4, Protocol::UDP), "UDP", 8);
+        addItem(statistic->getItem(IPVersion::IPV4, Protocol::OtherL3), "Other L3", 9);
 
         // IPv6
-        posY = START_POS_Y + 11.6f * OFFSET_Y;
+        posY = START_POS_Y + 10.6f * OFFSET_Y;
         createSubTitleLabel(START_POS_X, posY, "IPv6");
         createLine(posY + 25);
 
-        addItem(statistic->getItem(IPVersion::IPV6, Protocol::ICMPv6), "ICMPv6", 13);
-
-        addItem(statistic->getItem(IPVersion::IPV6, Protocol::TCP), "TCP", 15);
-        addItem(statistic->getItem(IPVersion::IPV6, Protocol::UDP), "UDP", 16);
-
-        ui->labelInfo->move(frameWidth / 2 - ui->labelInfo->width() / 2, frameHeight - 25);
+        addItem(statistic->getItem(IPVersion::IPV6, Protocol::ICMPv6), "ICMPv6", 12);
+        addItem(statistic->getItem(IPVersion::IPV6, Protocol::TCP), "TCP", 13);
+        addItem(statistic->getItem(IPVersion::IPV6, Protocol::UDP), "UDP", 14);
+        addItem(statistic->getItem(IPVersion::IPV6, Protocol::OtherL3), "Other L3", 15);
 
         updateStatisticDisplay();
 

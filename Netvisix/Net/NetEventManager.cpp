@@ -368,7 +368,7 @@ namespace Netvisix {
     }
 
     void NetEventManager::handleNewHosts(NetEvent *ne) {
-        if (ne->l1Protocol != Protocol::ETHERNETII) {
+        if (ne->l1Protocol != Protocol::EthernetII) {
             return;
         }
 
@@ -532,10 +532,10 @@ namespace Netvisix {
                   + ":" + NetEvent::getProtocolString(netEvent->l2Protocol)
                   + ":" + NetEvent::getProtocolString(netEvent->l3Protocol) + "]\t\t";
 
-        if (netEvent->l1Protocol != Protocol::UNKOWN) {
+        if (netEvent->l1Protocol != Protocol::Unkown) {
             s += "[" + netEvent->srcAddrHW.to_string() + " > " + netEvent->dstAddrHW.to_string() + "]  ";
 
-            if (netEvent->l2Protocol != Protocol::ARP && netEvent->l2Protocol != Protocol::UNKOWN) {
+            if (netEvent->l2Protocol != Protocol::ARP && netEvent->l2Protocol != Protocol::Unkown) {
                 if (netEvent->l2Protocol == Protocol::IPv6 || netEvent->l2Protocol == Protocol::ICMPv6) {
                     s += "[" + netEvent->srcAddrIPv6.to_string() + " > " + netEvent->dstAddrIPv6.to_string() + "]  ";
                 }

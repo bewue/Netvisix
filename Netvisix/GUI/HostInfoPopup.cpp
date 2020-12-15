@@ -140,8 +140,8 @@ namespace Netvisix {
     }
 
     void HostInfoPopup::updateBytes() {
-        unsigned long long bytesSnt = this->vHost->getHost()->statistic->getItem(IPVersion::ALL, Protocol::ETHERNETII)->bytesSnt;
-        unsigned long long bytesRcv = this->vHost->getHost()->statistic->getItem(IPVersion::ALL, Protocol::ETHERNETII)->bytesRcv;
+        unsigned long long bytesSnt = this->vHost->getHost()->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesSnt;
+        unsigned long long bytesRcv = this->vHost->getHost()->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesRcv;
 
         ui->labelBytesSnt->setText("Snt: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesSnt).c_str()) + "</b>");
         ui->labelBytesRcv->setText("Rcv: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesRcv).c_str()) + "</b>");

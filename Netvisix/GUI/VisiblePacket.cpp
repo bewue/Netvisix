@@ -58,11 +58,16 @@ namespace Netvisix {
 
     QColor VisiblePacket::getPacketColor(Protocol protocol) {
         switch (protocol) {
-            case Protocol::ETHERNETII:
+            case Protocol::EthernetII:
                 return Qt::white;
             case Protocol::IPv4:
                 return Qt::white;
             case Protocol::IPv6:
+                return Qt::white;
+
+            case Protocol::OtherL2:
+                return QColor(240, 240, 240, 255);
+            case Protocol::OtherL3:
                 return Qt::white;
 
             case Protocol::ARP:
@@ -71,13 +76,11 @@ namespace Netvisix {
                 return QColor(250, 250, 50, 255);
             case Protocol::ICMPv6:
                 return QColor(250, 250, 50, 255);
-            case Protocol::IGMP:
-                return QColor(240, 160, 0, 255);
 
             case Protocol::TCP:
-                return QColor(100, 150, 255, 255);
+                return QColor(110, 180, 255, 255);
             case Protocol::UDP:
-                return QColor(80, 230, 60, 255);
+                return QColor(60, 230, 60, 255);
 
             default:
                 return Qt::white;
@@ -107,7 +110,6 @@ namespace Netvisix {
                 painter.drawEllipse(getPosition() + vectorToTarget * 8, r, r);
             }
         }
-
      }
 
      void VisiblePacket::onReachedTargetPosition() {

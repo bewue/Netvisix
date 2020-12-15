@@ -63,7 +63,7 @@ namespace Netvisix {
 
         ne->size = pdu.size();
         if ((pduETH = pdu.find_pdu<Tins::EthernetII>())) {
-            ne->l1Protocol = Protocol::ETHERNETII;
+            ne->l1Protocol = Protocol::EthernetII;
             ne->srcAddrHW = pduETH->src_addr();
             ne->dstAddrHW = pduETH->dst_addr();
 
@@ -105,11 +105,14 @@ namespace Netvisix {
                 }
                 // ICMP
                 else if (pduETH->find_pdu<Tins::ICMP>()) {
-                    ne->l2Protocol = Protocol::ICMP;
+                    ne->l3Protocol = Protocol::ICMP;
                 }
                 // ICMPv6
                 else if (pduETH->find_pdu<Tins::ICMPv6>()) {
-                    ne->l2Protocol = Protocol::ICMPv6;
+                    ne->l3Protocol = Protocol::ICMPv6;
+                }
+                else {
+                    ne->l3Protocol = Protocol::OtherL3;
                 }
             }
 
@@ -119,12 +122,12 @@ namespace Netvisix {
             }
             // ?
             else {
-                ne->l2Protocol = Protocol::UNKOWN;
+                ne->l2Protocol = Protocol::OtherL2;
             }
         }
         // (no ethernet II frame)
         else {
-            ne->l1Protocol = Protocol::UNKOWN;
+            ne->l1Protocol = Protocol::Unkown;
         }
 
         nm->handleNetEvent(ne);

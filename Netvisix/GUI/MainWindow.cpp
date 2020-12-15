@@ -212,22 +212,23 @@ namespace Netvisix {
     void MainWindow::initLegendDisplay() {
         QGraphicsScene* gScene = new QGraphicsScene(this);
 
-        // layer 2
         ui->gvColorARP->setScene(gScene);
         ui->gvColorARP->setForegroundBrush(VisiblePacket::getPacketColor(Protocol::ARP));
 
         ui->gvColorICMP->setScene(gScene);
         ui->gvColorICMP->setForegroundBrush(VisiblePacket::getPacketColor(Protocol::ICMP));
 
-        ui->gvColorIGMP->setScene(gScene);
-        ui->gvColorIGMP->setForegroundBrush(VisiblePacket::getPacketColor(Protocol::IGMP));
-
-        // layer 3
         ui->gvColorTCP->setScene(gScene);
         ui->gvColorTCP->setForegroundBrush(VisiblePacket::getPacketColor(Protocol::TCP));
 
         ui->gvColorUDP->setScene(gScene);
         ui->gvColorUDP->setForegroundBrush(VisiblePacket::getPacketColor(Protocol::UDP));
+
+        ui->gvColorOtherL2->setScene(gScene);
+        ui->gvColorOtherL2->setForegroundBrush(VisiblePacket::getPacketColor(Protocol::OtherL2));
+
+        ui->gvColorOtherL3->setScene(gScene);
+        ui->gvColorOtherL3->setForegroundBrush(VisiblePacket::getPacketColor(Protocol::OtherL3));
 
         // ipv6
         QGraphicsScene* gSceneIPv6Packet = new QGraphicsScene(this);
@@ -314,7 +315,7 @@ void Netvisix::MainWindow::on_actionInfo_triggered() {
             + "\r\n\r\n" + T_APP_NAME + " is licensed under the " + T_APP_LICENSE
             + "\r\n\r\nDeveloper: " + T_AUTHOR_NAME
             + "\r\nContact: " + T_AUTHOR_EMAIL
-            + "\r\n\r\nCode: " + T_CODE_URL + "\r\n";
+            + "\r\n\r\n" + T_CODE_URL + "\r\n";
     msgBox.setText(text.c_str());
     msgBox.exec();
 }
