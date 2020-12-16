@@ -194,16 +194,19 @@ namespace Netvisix {
     void NetView::mousePressEvent(QMouseEvent *event) {
         QPoint mousePos = mapFromGlobal(QCursor::pos());
 
-        VisibleHost* vHost = getHostAtPosition(mousePos);
+        VisibleHost* vHost = getHostAtPosition(mousePos, true);
         if (vHost != nullptr) {
             bool marked = !vHost->getMarked();
             vHost->setMarked(marked);
         }
     }
 
-    VisibleHost* NetView::getHostAtPosition(QPointF pos) {
+    VisibleHost* NetView::getHostAtPosition(QPointF pos, bool visibleOnly) {
         for (unsigned int i = 0; i < visibleHosts->size(); i++) {
             VisibleHost* v = visibleHosts->at(i);
+            if (visibleOnly && ! v->getIsVisible()) {
+                continue;
+            }
 
             double diffX = v->getPosition().x() - pos.x();
             double diffY = v->getPosition().y() - pos.y();
@@ -325,14 +328,14 @@ namespace Netvisix {
         QPoint mousePos = mapFromGlobal(QCursor::pos());
 
         if (hostInfoPopup == nullptr) {
-            VisibleHost* vHost = getHostAtPosition(mousePos);
+            VisibleHost* vHost = getHostAtPosition(mousePos, true);
             if (vHost != nullptr) {
                 hostInfoPopup = new HostInfoPopup(vHost, this);
                 hostInfoPopup->show();
             }
         }
         else {
-            VisibleHost* vHost = getHostAtPosition(mousePos);
+            VisibleHost* vHost = getHostAtPosition(mousePos, false);
             if (hostInfoPopup->geometry().contains(mousePos) == false && (vHost == nullptr || vHost != hostInfoPopup->getHost())) {
                 hostInfoPopup->close();
                 hostInfoPopup = nullptr;

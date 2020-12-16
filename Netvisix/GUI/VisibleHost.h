@@ -48,6 +48,8 @@ namespace Netvisix {
 
             const static Qt::BrushStyle MULTICAST_BRUSH_STYLE;
 
+            bool getIsVisible() { return this->isVisible; }
+
         private:
             struct MulticastEffectData {
                 bool isActive = false;
@@ -63,6 +65,10 @@ namespace Netvisix {
             const float ALIVE_EFFECT_FADE_OUT_DURATION = 1000;
             QColor colorAliveEffect;
             QBrush brushAliveEffect;
+
+            bool isVisible;
+            quint64 visibleTimer;
+            const float VISIBLE_DURATION = 15000;
 
             Host* host;
 

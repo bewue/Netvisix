@@ -47,6 +47,9 @@ namespace Netvisix {
 
         colorLocalInterfaceMarker = QColor(190, 190, 190, 255);
 
+        visibleTimer    = 0;
+        isVisible       = true;
+
         speed = 1.5f;
 
         setRadius(12);
@@ -99,12 +102,30 @@ namespace Netvisix {
     }
 
     void VisibleHost::showHostAliveEffect() {
+        if (! isVisible) {
+            setPosition(targetPos);
+        }
+        visibleTimer    = 0;
+        isVisible       = true;
+
         aliveEffectTimer = 0;
         brushAliveEffect.setColor(colorAliveEffect);
         aliveEffectActive = true;
     }
 
     void VisibleHost::onVisibleUpdate(quint64 dt) {
+        if (! isVisible) {
+            return;
+        }
+
+        if (host->getNetArea() != NetArea::LOCAL_INTERFACE) {
+            visibleTimer += dt;
+            if (visibleTimer >= VISIBLE_DURATION) {
+                isVisible = false;
+                return;
+            }
+        }
+
         VisibleBase::onVisibleUpdate(dt);
 
         // multicast effect
@@ -141,6 +162,10 @@ namespace Netvisix {
     }
 
     void VisibleHost::onVisiblePaint(QPainter& painter) {
+        if (! isVisible) {
+            return;
+        }
+
         painter.setRenderHint(QPainter::Antialiasing, true);
 
         // multicast effect

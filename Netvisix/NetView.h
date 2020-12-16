@@ -86,7 +86,7 @@ namespace Netvisix {
             void updateLanAreaRect();
             void updateHostPositions();
 
-            VisibleHost* getHostAtPosition(QPointF pos);
+            VisibleHost* getHostAtPosition(QPointF pos, bool visibleOnly);
             void handleHostInfoPopup(quint64 dt);
 
             void showLink(VisibleHost* sender, VisibleHost* receiver);
