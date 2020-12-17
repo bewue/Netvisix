@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1500</width>
+    <width>1000</width>
     <height>612</height>
    </rect>
   </property>
@@ -336,7 +336,7 @@
       <property name="maximumSize">
        <size>
         <width>30000</width>
-        <height>32</height>
+        <height>25</height>
        </size>
       </property>
       <property name="font">
@@ -349,8 +349,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>41</width>
-         <height>28</height>
+         <width>37</width>
+         <height>24</height>
         </rect>
        </property>
        <property name="minimumSize">
@@ -375,89 +375,6 @@
        </property>
        <property name="checkable">
         <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="lineEditNetworkIPv4">
-       <property name="geometry">
-        <rect>
-         <x>890</x>
-         <y>0</y>
-         <width>221</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>192.168.0.0/16</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="labelNetworkIPv4">
-       <property name="geometry">
-        <rect>
-         <x>770</x>
-         <y>0</y>
-         <width>141</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>IPv4-Subnet:</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="labelNetworkIPv6">
-       <property name="geometry">
-        <rect>
-         <x>1140</x>
-         <y>0</y>
-         <width>141</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>IPv6-Subnet:</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="lineEditNetworkIPv6">
-       <property name="geometry">
-        <rect>
-         <x>1260</x>
-         <y>0</y>
-         <width>351</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>fd00::/8</string>
        </property>
       </widget>
       <widget class="QPushButton" name="buttonPause">
@@ -465,8 +382,8 @@
         <rect>
          <x>50</x>
          <y>0</y>
-         <width>41</width>
-         <height>28</height>
+         <width>37</width>
+         <height>24</height>
         </rect>
        </property>
        <property name="minimumSize">
@@ -490,42 +407,6 @@
         <string/>
        </property>
        <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="comboBoxInterfaces">
-       <property name="geometry">
-        <rect>
-         <x>160</x>
-         <y>0</y>
-         <width>401</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkBoxPromiscMode">
-       <property name="geometry">
-        <rect>
-         <x>590</x>
-         <y>0</y>
-         <width>201</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>8</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Promiscious M.</string>
-       </property>
-       <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
@@ -534,8 +415,8 @@
         <rect>
          <x>100</x>
          <y>0</y>
-         <width>41</width>
-         <height>28</height>
+         <width>37</width>
+         <height>24</height>
         </rect>
        </property>
        <property name="minimumSize">
@@ -587,7 +468,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1500</width>
+     <width>1000</width>
      <height>30</height>
     </rect>
    </property>
@@ -622,7 +503,6 @@
     <property name="title">
      <string>Op&amp;tions</string>
     </property>
-    <addaction name="actionRefresh_Interfacelist"/>
     <addaction name="actionReverseDNSLookup"/>
    </widget>
    <addaction name="menuFile"/>

@@ -19,12 +19,13 @@
 
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "Config.h"
 #include "Net/NetEventManager.h"
-#include "GUI/StatusbarDisplay.h"
 #include "Net/NetUtil.h"
+#include "GUI/StatusbarDisplay.h"
 #include "GUI/VisibleHost.h"
 #include "GUI/VisiblePacket.h"
-#include "GUI/Strings.h"
+#include "GUI/StartCapturePopup.h"
 
 #include <QDebug>
 #include <QDateTime>
@@ -48,7 +49,7 @@ namespace Netvisix {
 
         ui->setupUi(this);
 
-        setWindowTitle(T_APP_NAME.c_str());
+        setWindowTitle(Config::T_APP_NAME.c_str());
         setWindowIcon(QPixmap(":/Resources/icon-256x256.png"));
 
         ui->buttonLegend->setIcon(QIcon(":/Resources/icon_legend.png"));
@@ -66,13 +67,6 @@ namespace Netvisix {
         timer->start();
 
         statusbarDisplay = new StatusbarDisplay(this);
-
-        interfaces = std::vector<Tins::NetworkInterface>();
-        updateInterfacesList();
-
-        setRunSpecificGUIElementsEnabled(true);
-
-        ui->buttonLegend->setChecked(true);
 
         initLegendDisplay();
 
@@ -114,51 +108,6 @@ namespace Netvisix {
         statusbarDisplay->updateStatusbar(dt);
     }
 
-    std::string MainWindow::getInterfaceListName(Tins::NetworkInterface networkInterface) {
-#ifdef Q_OS_WIN
-        Tins::NetworkInterface::Info info = networkInterface.addresses();
-        std::string ifListName = info.ip_addr.to_string();
-        if (info.hw_addr != nullptr) {
-            ifListName += " [" + info.hw_addr.to_string() + "]";
-        }
-        return ifListName;
-#else
-        return networkInterface.name();
-#endif
-    }
-
-    void MainWindow::updateInterfacesList() {
-        interfaces.clear();
-        ui->comboBoxInterfaces->clear();
-
-        Tins::NetworkInterface defaultInterface;
-        try {
-            defaultInterface = Tins::NetworkInterface::default_interface();
-            interfaces.push_back(defaultInterface);
-            ui->comboBoxInterfaces->addItem(getInterfaceListName(defaultInterface).c_str());
-        } catch (Tins::invalid_interface const &) {
-            //MainWindow::showInfoPopup("Not Connected?");
-        }
-
-        std::vector<Tins::NetworkInterface> ifs = Tins::NetworkInterface::all();
-        for (unsigned int i = 0; i < ifs.size(); i++) {
-            if (ifs.at(i) != defaultInterface) {
-                interfaces.push_back(ifs.at(i));
-                std::string ifListName = getInterfaceListName(ifs.at(i));
-                ui->comboBoxInterfaces->addItem(ifListName.c_str());
-            }
-        }
-    }
-
-    void MainWindow::setRunSpecificGUIElementsEnabled(bool enabled) {
-        ui->buttonPause->setEnabled(!enabled);
-
-        ui->comboBoxInterfaces->setEnabled(enabled);
-        ui->checkBoxPromiscMode->setEnabled(enabled);
-        ui->lineEditNetworkIPv4->setEnabled(enabled);
-        ui->lineEditNetworkIPv6->setEnabled(enabled);
-    }
-
     void MainWindow::showInfoPopup(std::string text) {
         QMessageBox msgBox;
         msgBox.information(this, " ", text.c_str());
@@ -166,7 +115,7 @@ namespace Netvisix {
 
     void MainWindow::showQuitPopup() {
         QMessageBox msgBox(this);
-        std::string text = "Quit " + T_APP_NAME + "?";
+        std::string text = "Quit " + Config::T_APP_NAME + "?";
         QPushButton* buttonOk = msgBox.addButton(QMessageBox::Ok);
         msgBox.addButton(QMessageBox::Cancel);
         msgBox.setWindowTitle(" ");
@@ -189,24 +138,24 @@ namespace Netvisix {
             NetEventManager::SharedInstance()->reset();
             ui->widgetNetView->reset();
             ui->buttonPause->setChecked(false);
-            ui->buttonStartStopSniffing->setChecked(false);
-            setRunSpecificGUIElementsEnabled(true);
         }
-        else {
-            ui->buttonStartStopSniffing->setChecked(true);
-        }
+
+        updateSniffingButton();
     }
 
     void MainWindow::updateSniffingButton() {
          if (NetEventManager::SharedInstance()->getIsSniffingRunning()) {
-             ui->buttonStartStopSniffing->setIcon(QIcon(":/Resources/icon_stop.png"));
+            ui->buttonStartStopSniffing->setIcon(QIcon(":/Resources/icon_stop.png"));
+            ui->buttonPause->setEnabled(true);
          }
          else {
             ui->buttonStartStopSniffing->setIcon(QIcon(":/Resources/icon_start.png"));
+            ui->buttonPause->setEnabled(false);
          }
 
-         ui->buttonStartStopSniffing->setIconSize(QSize(13, 13));
          ui->buttonStartStopSniffing->setChecked(false);
+
+         ui->buttonStartStopSniffing->setIconSize(QSize(13, 13));
     }
 
     void MainWindow::initLegendDisplay() {
@@ -248,40 +197,9 @@ void Netvisix::MainWindow::on_buttonStartStopSniffing_clicked() {
         showStopSniffingPopup();
     }
     else {
-        // try to start sniffing
-        std::string selectedInterface = interfaces.at(ui->comboBoxInterfaces->currentIndex()).name();
-        std::string exceptionString = "";
-
-        // check user privilegs
-        if (NetUtil::CheckCurrentUserSniffingPrivilegs(selectedInterface, &exceptionString) == false) {
-            ui->buttonStartStopSniffing->setChecked(false);
-#ifdef Q_OS_WIN
-            showInfoPopup(exceptionString);
-#else
-            showInfoPopup(exceptionString + "\r\n\r\nTry to run " + T_APP_NAME + " with root privileges.");
-#endif
-            return;
-        }
-
-        bool promiscMode = ui->checkBoxPromiscMode->isChecked();
-
-        // check subnet validity
-        std::string subnetStringIPv4 = ui->lineEditNetworkIPv4->text().toStdString();
-        std::string subnetStringIPv6 = ui->lineEditNetworkIPv6->text().toStdString();
-        if (NetUtil::getIsSubnetStringIPv4Valid(subnetStringIPv4) == false) {
-            showInfoPopup("Invalid IPv4 Subnet!");
-        }
-        else if (NetUtil::getIsSubnetStringIPv6Valid(subnetStringIPv6) == false) {
-            showInfoPopup("Invalid IPv6 Subnet!");
-        }
-        else {
-            // subnets are valid, start sniffing
-            NetEventManager::SharedInstance()->startSniffing(selectedInterface, promiscMode, subnetStringIPv4, subnetStringIPv6);
-            setRunSpecificGUIElementsEnabled(false);
-        }
+        StartCapturePopup* startCapturePopup = new StartCapturePopup(this);
+        startCapturePopup->show();
     }
-
-    updateSniffingButton();
 }
 
 void Netvisix::MainWindow::on_buttonPause_clicked() {
@@ -311,17 +229,13 @@ void Netvisix::MainWindow::on_actionInfo_triggered() {
     QMessageBox msgBox(this);
     msgBox.addButton(QMessageBox::Ok);
     msgBox.setWindowTitle(" ");
-    std::string text = T_APP_NAME + " " + T_APP_VERSION
-            + "\r\n\r\n" + T_APP_NAME + " is licensed under the " + T_APP_LICENSE
-            + "\r\n\r\nDeveloper: " + T_AUTHOR_NAME
-            + "\r\nContact: " + T_AUTHOR_EMAIL
-            + "\r\n\r\n" + T_CODE_URL + "\r\n";
+    std::string text = Config::T_APP_NAME + " " + Config::T_APP_VERSION
+            + "\r\n\r\n" + Config::T_APP_NAME + " is licensed under the " + Config::T_APP_LICENSE
+            + "\r\n\r\nDeveloper: " + Config::T_AUTHOR_NAME
+            + "\r\nContact: " + Config::T_AUTHOR_EMAIL
+            + "\r\n\r\n" + Config::T_CODE_URL + "\r\n";
     msgBox.setText(text.c_str());
     msgBox.exec();
-}
-
-void Netvisix::MainWindow::on_actionRefresh_Interfacelist_triggered() {
-    updateInterfacesList();
 }
 
 void Netvisix::MainWindow::on_actionReverseDNSLookup_triggered() {

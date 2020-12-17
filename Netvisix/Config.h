@@ -17,18 +17,20 @@
  *  along with Netvisix.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STRINGS_H
-#define STRINGS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 
 namespace Netvisix {
+    namespace Config {
 
-    static const std::string T_APP_NAME             = "Netvisix";
-    static const std::string T_APP_VERSION          = "1.3.2";
-    static const std::string T_APP_LICENSE          = "GPLv3";
-    static const std::string T_AUTHOR_NAME          = "Benjamin W.";
-    static const std::string T_AUTHOR_EMAIL         = "bitbatzen@gmail.com";
-    static const std::string T_CODE_URL             = "https://github.com/bewue/Netvisix";
+        static const std::string T_APP_NAME             = "Netvisix";
+        static const std::string T_APP_VERSION          = "1.3.2";
+        static const std::string T_APP_LICENSE          = "GPLv3";
+        static const std::string T_AUTHOR_NAME          = "Benjamin W.";
+        static const std::string T_AUTHOR_EMAIL         = "bitbatzen@gmail.com";
+        static const std::string T_CODE_URL             = "https://github.com/bewue/Netvisix";
 
+    } // namespace Config
 } // namespace Netvisix
-#endif // STRINGS_H
+#endif // CONFIG_H

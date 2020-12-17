@@ -13,6 +13,7 @@ QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
     GUI/MainWindow.cpp \
+    GUI/StartCapturePopup.cpp \
     GUI/VisibleHost.cpp \
     GUI/VisibleBase.cpp \
     NetView.cpp \
@@ -29,6 +30,8 @@ SOURCES += main.cpp\
     GUI/StatisticPopup.cpp
 
 HEADERS += GUI/MainWindow.h \
+    Config.h \
+    GUI/StartCapturePopup.h \
     GUI/VisibleHost.h \
     GUI/VisibleBase.h \
     NetView.h \
@@ -43,11 +46,11 @@ HEADERS += GUI/MainWindow.h \
     Net/NetUtil.h \
     GUI/HostInfoPopup.h \
     GUI/VisibleLink.h \
-    GUI/StatisticPopup.h \
-    GUI/Strings.h
+    GUI/StatisticPopup.h
 
 FORMS += MainWindow.ui \
     GUI/HostInfoPopup.ui \
+    GUI/StartCapturePopup.ui \
     GUI/StatisticPopup.ui
 
 RESOURCES += \

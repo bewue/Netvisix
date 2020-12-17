@@ -49,6 +49,8 @@ namespace Netvisix {
         void showQuitPopup();
         void showStopSniffingPopup();
 
+        void updateSniffingButton();
+
     public slots:
          void mainUpdate();
 
@@ -59,7 +61,6 @@ namespace Netvisix {
 
          void on_actionQuit_triggered();
          void on_actionInfo_triggered();
-         void on_actionRefresh_Interfacelist_triggered();
 
          void on_actionReverseDNSLookup_triggered();
 
@@ -70,14 +71,7 @@ namespace Netvisix {
 
         void updateStatusbar(quint64 dt);
 
-        void setRunSpecificGUIElementsEnabled(bool enabled);
-
         void initLegendDisplay();
-
-        void updateSniffingButton();
-
-        void updateInterfacesList();
-        std::string getInterfaceListName(Tins::NetworkInterface networkInterface);
 
         Ui::MainWindow *ui;
 
@@ -90,8 +84,6 @@ namespace Netvisix {
         StatusbarDisplay* statusbarDisplay;
 
         float widgetLegendWidth;
-
-        std::vector<Tins::NetworkInterface> interfaces;
 
 #ifdef Q_OS_WIN
         const float FONT_SIZE = 9;
