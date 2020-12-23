@@ -42,8 +42,8 @@ namespace Netvisix {
             struct StatisticItem {
                 NetStatistic::Item* item;
                 QLabel* labelName;
-                QLabel* labelPacketsSnt;
-                QLabel* labelPacketsRcv;
+                QLabel* labelFramesSnt;
+                QLabel* labelFramesRcv;
                 QLabel* labelBytesSnt;
                 QLabel* labelBytesRcv;
             };

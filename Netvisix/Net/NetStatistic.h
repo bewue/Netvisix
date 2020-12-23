@@ -45,8 +45,8 @@ namespace Netvisix {
                 IPVersion ipVersion;
                 Layer layer;
                 Protocol protocol;
-                unsigned long long packetsSnt = 0;
-                unsigned long long packetsRcv = 0;
+                unsigned long long framesSnt = 0;
+                unsigned long long framesRcv = 0;
                 unsigned long long bytesSnt = 0;
                 unsigned long long bytesRcv = 0;
             };

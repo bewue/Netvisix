@@ -65,21 +65,21 @@ namespace Netvisix {
 
         // gui layout
         const float columnTitlePosY = 10;
-        createColumnTitleLabel(START_POS_X + 1 * OFFSET_X, columnTitlePosY, "PcktsSnt");
-        createColumnTitleLabel(START_POS_X + 2 * OFFSET_X, columnTitlePosY, "PcktsRcv");
+        createColumnTitleLabel(START_POS_X + 1 * OFFSET_X, columnTitlePosY, "FramesSnt");
+        createColumnTitleLabel(START_POS_X + 2 * OFFSET_X, columnTitlePosY, "FramesRcv");
         createColumnTitleLabel(START_POS_X + 3 * OFFSET_X, columnTitlePosY, "BytesSnt");
         createColumnTitleLabel(START_POS_X + 4 * OFFSET_X, columnTitlePosY, "BytesRcv");
 
         addItem(statistic->getItem(IPVersion::ALL, Protocol::EthernetII), "Frames", 0);
         addItem(statistic->getItem(IPVersion::ALL, Protocol::Unkown), "Unkown", 1);
         addItem(statistic->getItem(IPVersion::ALL, Protocol::OtherL2), "Other L2", 2);
-        addItem(statistic->getItem(IPVersion::IPV4, Protocol::ARP), "ARP", 3);
 
         // IPv4
-        float posY = START_POS_Y + 4.6f * OFFSET_Y;
+        float posY = START_POS_Y + 3.6f * OFFSET_Y;
         createSubTitleLabel(START_POS_X, posY, "IPv4");
         createLine(posY + 25);
 
+        addItem(statistic->getItem(IPVersion::IPV4, Protocol::ARP), "ARP", 5);
         addItem(statistic->getItem(IPVersion::IPV4, Protocol::ICMP), "ICMP", 6);
         addItem(statistic->getItem(IPVersion::IPV4, Protocol::TCP), "TCP", 7);
         addItem(statistic->getItem(IPVersion::IPV4, Protocol::UDP), "UDP", 8);
@@ -121,8 +121,8 @@ namespace Netvisix {
         sItem->labelName->move(START_POS_X, posY);
         sItem->labelName->setStyleSheet("QLabel { color: rgb(70, 70, 130) }");
 
-        sItem->labelPacketsSnt = createCounterLabel(START_POS_X + 1 * OFFSET_X, posY);
-        sItem->labelPacketsRcv = createCounterLabel(START_POS_X + 2 * OFFSET_X, posY);
+        sItem->labelFramesSnt = createCounterLabel(START_POS_X + 1 * OFFSET_X, posY);
+        sItem->labelFramesRcv = createCounterLabel(START_POS_X + 2 * OFFSET_X, posY);
         sItem->labelBytesSnt = createCounterLabel(START_POS_X + 3 * OFFSET_X, posY);
         sItem->labelBytesRcv = createCounterLabel(START_POS_X + 4 * OFFSET_X, posY);
 
@@ -165,11 +165,11 @@ namespace Netvisix {
         for (unsigned int i = 0; i < items->size(); i++) {
             StatisticItem* sItem = items->at(i);
 
-            handleCountTextColor(sItem->labelPacketsSnt, sItem->item->packetsSnt);
-            sItem->labelPacketsSnt->setText(QString::number(sItem->item->packetsSnt));
+            handleCountTextColor(sItem->labelFramesSnt, sItem->item->framesSnt);
+            sItem->labelFramesSnt->setText(QString::number(sItem->item->framesSnt));
 
-            handleCountTextColor(sItem->labelPacketsRcv, sItem->item->packetsRcv);
-            sItem->labelPacketsRcv->setText(QString::number(sItem->item->packetsRcv));
+            handleCountTextColor(sItem->labelFramesRcv, sItem->item->framesRcv);
+            sItem->labelFramesRcv->setText(QString::number(sItem->item->framesRcv));
 
             handleCountTextColor(sItem->labelBytesSnt, sItem->item->bytesSnt);
             sItem->labelBytesSnt->setText(NetUtil::getByteString(sItem->item->bytesSnt).c_str());

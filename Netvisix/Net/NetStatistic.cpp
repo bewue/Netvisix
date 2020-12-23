@@ -27,9 +27,9 @@ namespace Netvisix {
         addProtocol(IPVersion::ALL, Layer::L1, Protocol::EthernetII);
         addProtocol(IPVersion::ALL, Layer::L1, Protocol::Unkown);
         addProtocol(IPVersion::ALL, Layer::L2, Protocol::OtherL2);
-        addProtocol(IPVersion::IPV4, Layer::L2, Protocol::ARP);
 
         // IPv4
+        addProtocol(IPVersion::IPV4, Layer::L2, Protocol::ARP);
         addProtocol(IPVersion::IPV4, Layer::L3, Protocol::ICMP);
         addProtocol(IPVersion::IPV4, Layer::L3, Protocol::TCP);
         addProtocol(IPVersion::IPV4, Layer::L3, Protocol::UDP);
@@ -89,12 +89,12 @@ namespace Netvisix {
 
     void NetStatistic::handleTrafficDirection(TrafficDirection trafficDirection, Item *item, NetEvent *ne) {
         if (trafficDirection == TrafficDirection::TD_IN) {
-            item->packetsRcv++;
+            item->framesRcv++;
             item->bytesRcv += ne->size;
         }
         else {
             // OUT
-            item->packetsSnt++;
+            item->framesSnt++;
             item->bytesSnt += ne->size;
         }
     }

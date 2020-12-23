@@ -104,8 +104,8 @@ namespace Netvisix {
         }
 
         // packet counters
-        ui->labelPacketsSnt->move(ui->labelPacketsSnt->pos().x(), ui->labelPacketsSnt->pos().y() + heightAddition - 10);
-        ui->labelPacketsRcv->move(ui->labelPacketsRcv->pos().x(), ui->labelPacketsRcv->pos().y() + heightAddition - 10);
+        ui->labelFramesSnt->move(ui->labelFramesSnt->pos().x(), ui->labelFramesSnt->pos().y() + heightAddition - 10);
+        ui->labelFramesRcv->move(ui->labelFramesRcv->pos().x(), ui->labelFramesRcv->pos().y() + heightAddition - 10);
 
         // byte counters
         ui->labelBytesSnt->move(ui->labelBytesSnt->pos().x(), ui->labelBytesSnt->pos().y() + heightAddition - 10);
@@ -144,17 +144,17 @@ namespace Netvisix {
     }
 
     void HostInfoPopup::updateCounters() {
-        unsigned long long packetsSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->packetsSnt;
-        unsigned long long packetsRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->packetsRcv;
+        unsigned long long framesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesSnt;
+        unsigned long long framesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesRcv;
 
-        ui->labelPacketsSnt->setText("PcktsSnt: <b>" + QString::number(packetsSnt) + "</b>");
-        ui->labelPacketsRcv->setText("PcktsRcv: <b>" + QString::number(packetsRcv) + "</b>");
+        ui->labelFramesSnt->setText("FramesSnt: <b>" + QString::number(framesSnt) + "</b>");
+        ui->labelFramesRcv->setText("FramesRcv: <b>" + QString::number(framesRcv) + "</b>");
 
         unsigned long long bytesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesSnt;
         unsigned long long bytesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesRcv;
 
-        ui->labelBytesSnt->setText("BytesSnt: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesSnt).c_str()) + "</b>");
-        ui->labelBytesRcv->setText("BytesRcv: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesRcv).c_str()) + "</b>");
+        ui->labelBytesSnt->setText("BytesSnt: &nbsp;<b>" + QString::fromUtf8(NetUtil::getByteString(bytesSnt).c_str()) + "</b>");
+        ui->labelBytesRcv->setText("BytesRcv: &nbsp;<b>" + QString::fromUtf8(NetUtil::getByteString(bytesRcv).c_str()) + "</b>");
     }
 
     void HostInfoPopup::updateLoop() {

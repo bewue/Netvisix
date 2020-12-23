@@ -134,7 +134,7 @@
     <string>BytesRcv: 14 KiB</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelPacketsSnt">
+  <widget class="QLabel" name="labelFramesSnt">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -144,10 +144,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>PcktsSnt: 0</string>
+    <string>FramsSnt: 0</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelPacketsRcv">
+  <widget class="QLabel" name="labelFramesRcv">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -157,7 +157,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>PcktsRcv: 0</string>
+    <string>FramsRcv: 0</string>
    </property>
   </widget>
  </widget>

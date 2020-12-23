@@ -143,7 +143,7 @@ namespace Netvisix {
         QPushButton* buttonOk = msgBox.addButton(QMessageBox::Ok);
         msgBox.addButton(QMessageBox::Cancel);
         msgBox.setWindowTitle(" ");
-        msgBox.setText("Stop Sniffing?\r\n\r\nAll progress will be lost!");
+        msgBox.setText("Stop capture?\r\n\r\nAll progress will be lost!");
         msgBox.exec();
         if (msgBox.clickedButton() == buttonOk) {
             // stop sniffing

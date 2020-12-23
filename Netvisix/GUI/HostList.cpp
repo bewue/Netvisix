@@ -55,7 +55,7 @@ namespace Netvisix {
 
         // table header
         QStringList headerLables;
-        headerLables << "Host" << "Packets" << "Bytes";
+        headerLables << "Host" << "Frames" << "Bytes";
         tableWidget->setHorizontalHeaderLabels(headerLables);
 
         const int width = mainWindow->getUI()->widgetHostList->width() - 40;
@@ -101,8 +101,8 @@ namespace Netvisix {
     void HostList::updateHostListItem(int row) {
         Host* host = getHostPointer(row);
 
-        unsigned long long packetsSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->packetsSnt;
-        unsigned long long packetsRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->packetsRcv;
+        unsigned long long framesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesSnt;
+        unsigned long long framesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesRcv;
 
         unsigned long long bytesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesSnt;
         unsigned long long bytesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesRcv;
@@ -110,7 +110,7 @@ namespace Netvisix {
         tableWidget->setItem(row, 0, new QTableWidgetItem(host->getPreferedHostIdentifier().c_str()));
 
         QTableWidgetItem* itemPackets = new QTableWidgetItem();
-        itemPackets->setData(Qt::EditRole, packetsSnt + packetsRcv);
+        itemPackets->setData(Qt::EditRole, framesSnt + framesRcv);
         tableWidget->setItem(row, 1, itemPackets);
 
         tableWidget->setItem(row, 2, new QTableWidgetItem(QString::fromUtf8(NetUtil::getByteString(bytesSnt + bytesRcv).c_str())));
