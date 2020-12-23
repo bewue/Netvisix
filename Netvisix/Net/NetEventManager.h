@@ -60,7 +60,7 @@ namespace Netvisix {
 
             void handleDNSAnswer(std::string ipAddr, std::string hostname);
 
-            void setPreparedNetEventListener(IPreparedNetEventListener* listener) { this->pneListener = listener; }
+            void addPreparedNetEventListener(IPreparedNetEventListener* listener) { this->pneListeners.push_back(listener); }
 
             bool getIsPaused() { return this->isPaused; }
             void setIsPaused(bool paused) { this->isPaused = paused; }
@@ -68,6 +68,8 @@ namespace Netvisix {
             unsigned long getNetEventCount() { return this->netEventCounter; }
 
             bool getIsLocalInterface(Host* h);
+
+            void onHostAddrUpdate(Host* host);
 
         private:
             struct DNSAnswer {
@@ -117,7 +119,7 @@ namespace Netvisix {
             std::vector<Host*>* hosts;
             unsigned long netEventCounter;
 
-            IPreparedNetEventListener* pneListener;
+            std::vector<IPreparedNetEventListener*> pneListeners;
 
             const Tins::AddressRange<Tins::IPv6Address> subnetIPv6LinkLocal = Tins::IPv6Address("fe80::") / 10;
 

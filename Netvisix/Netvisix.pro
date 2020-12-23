@@ -12,6 +12,7 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
+    GUI/HostList.cpp \
     GUI/MainWindow.cpp \
     GUI/StartCapturePopup.cpp \
     GUI/VisibleHost.cpp \
@@ -31,6 +32,7 @@ SOURCES += main.cpp\
 
 HEADERS += GUI/MainWindow.h \
     Config.h \
+    GUI/HostList.h \
     GUI/StartCapturePopup.h \
     GUI/VisibleHost.h \
     GUI/VisibleBase.h \

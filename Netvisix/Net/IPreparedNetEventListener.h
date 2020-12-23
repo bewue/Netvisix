@@ -34,6 +34,8 @@ namespace Netvisix {
             virtual void onPreparedNetEventNewHost(Host* newHost) = 0;
             virtual void onPreparedNetEventNewUnicastPacket(Host* sender, Host* receiver, NetEvent* netEvent) = 0;
             virtual void onPreparedNetEventNewMulticastPacket(Host* sender, NetEvent* netEvent) = 0;
+
+            virtual void onHostAddrUpdate(Host* host) = 0;
     };
 
 } // namespace Netvisix

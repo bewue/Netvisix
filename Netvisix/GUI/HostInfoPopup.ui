@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>425</width>
-    <height>119</height>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>85</y>
+     <y>100</y>
      <width>141</width>
      <height>23</height>
     </rect>
@@ -112,26 +112,52 @@
    <property name="geometry">
     <rect>
      <x>10</x>
+     <y>80</y>
+     <width>251</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>BytesSnt: 5 MiB</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelBytesRcv">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>80</y>
+     <width>301</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>BytesRcv: 14 KiB</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelPacketsSnt">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
      <y>60</y>
      <width>251</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Snt: 5 MiB</string>
+    <string>PcktsSnt: 0</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelBytesRcv">
+  <widget class="QLabel" name="labelPacketsRcv">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>210</x>
      <y>60</y>
      <width>301</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Rcv: 14 KiB</string>
+    <string>PcktsRcv: 0</string>
    </property>
   </widget>
  </widget>

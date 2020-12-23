@@ -55,6 +55,8 @@ namespace Netvisix {
             virtual void onPreparedNetEventNewUnicastPacket(Host* sender, Host* receiver, NetEvent* netEvent);
             virtual void onPreparedNetEventNewMulticastPacket(Host* sender, NetEvent* netEvent);
 
+            virtual void onHostAddrUpdate(Host* host) {}
+
             static float getRandF() {
                 int r = rand() % 10000;
                 return (float) r / 10000;

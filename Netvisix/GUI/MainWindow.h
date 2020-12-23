@@ -34,6 +34,7 @@ namespace Netvisix {
 
     class PacketHandler;
     class StatusbarDisplay;
+    class HostList;
 
     class MainWindow : public QMainWindow {
 
@@ -54,10 +55,15 @@ namespace Netvisix {
     public slots:
          void mainUpdate();
 
+    protected:
+         void resizeEvent(QResizeEvent *event);
+
     private slots:
          void on_buttonStartStopSniffing_clicked();
          void on_buttonPause_clicked();
          void on_buttonLegend_clicked();
+
+         void on_buttonHostList_clicked();
 
          void on_actionQuit_triggered();
          void on_actionInfo_triggered();
@@ -85,10 +91,13 @@ namespace Netvisix {
 
         float widgetLegendWidth;
 
+        HostList* hostList;
+        float widgetHostListWidth;
+
 #ifdef Q_OS_WIN
         const float FONT_SIZE = 9;
 #else
-        const float FONT_SIZE = 10;
+        const float FONT_SIZE = 9;
 #endif
     };
 

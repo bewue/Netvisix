@@ -26,6 +26,7 @@
 #include "GUI/VisibleHost.h"
 #include "GUI/VisiblePacket.h"
 #include "GUI/StartCapturePopup.h"
+#include "GUI/HostList.h"
 
 #include <QDebug>
 #include <QDateTime>
@@ -58,6 +59,9 @@ namespace Netvisix {
         ui->buttonPause->setIcon(QIcon(":/Resources/icon_pause.png"));
         ui->buttonPause->setIconSize(QSize(13, 13));
 
+        ui->buttonHostList->setIcon(QIcon(":/Resources/icon_legend.png"));
+        ui->buttonHostList->setIconSize(QSize(16, 16));
+
         updateSniffingButton();
 
         lastTime = QDateTime::currentMSecsSinceEpoch();
@@ -75,6 +79,8 @@ namespace Netvisix {
         QSize winSize = QSize(screenSize.width() * 0.75f, screenSize.height() * 0.85f);
 
         setGeometry((screenSize.width() - winSize.width()) / 2, (screenSize.height() - winSize.height()) * 0.35f, winSize.width(), winSize.height());
+
+        hostList = new HostList(this);
 
         MainWindow::updateAllWidgetFonts();
     }
@@ -98,12 +104,18 @@ namespace Netvisix {
         showQuitPopup();
     }
 
+    void MainWindow::resizeEvent(QResizeEvent *event) {
+        ui->buttonHostList->move(width() - 58, ui->buttonHostList->pos().y());
+    }
+
     void MainWindow::mainUpdate() {
         quint64 currentTime = QDateTime::currentMSecsSinceEpoch();
         quint64 dt = currentTime - lastTime;
         lastTime = currentTime;
 
         ui->widgetNetView->onUpdate(dt);
+
+        hostList->onUpdate(dt);
 
         statusbarDisplay->updateStatusbar(dt);
     }
@@ -137,6 +149,7 @@ namespace Netvisix {
             // stop sniffing
             NetEventManager::SharedInstance()->reset();
             ui->widgetNetView->reset();
+            hostList->reset();
             ui->buttonPause->setChecked(false);
         }
 
@@ -209,14 +222,27 @@ void Netvisix::MainWindow::on_buttonPause_clicked() {
 }
 
 void Netvisix::MainWindow::on_buttonLegend_clicked() {
-    bool showColorInfo = ui->widgetLegendDisplay->width() == 0;
-    if (showColorInfo) {
-        ui->widgetLegendDisplay->setMaximumWidth(widgetLegendWidth);
+    bool showLegendDisplay = (ui->widgetLegendDisplay->width() == 0);
+    if (showLegendDisplay) {
+        ui->widgetLegendDisplay->setFixedWidth(widgetLegendWidth);
     }
     else {
         // hide legend
         widgetLegendWidth = ui->widgetLegendDisplay->width();
-        ui->widgetLegendDisplay->setMaximumWidth(0);
+        ui->widgetLegendDisplay->setFixedWidth(0);
+    }
+    update();
+}
+
+void Netvisix::MainWindow::on_buttonHostList_clicked() {
+    bool showHostList = (ui->widgetHostList->width() == 0);
+    if (showHostList) {
+        ui->widgetHostList->setFixedWidth(widgetHostListWidth);
+    }
+    else {
+        // hide host list
+        widgetHostListWidth = ui->widgetHostList->width();
+        ui->widgetHostList->setFixedWidth(0);
     }
     update();
 }
@@ -233,7 +259,7 @@ void Netvisix::MainWindow::on_actionInfo_triggered() {
             + "\r\n\r\n" + Config::T_APP_NAME + " is licensed under the " + Config::T_APP_LICENSE
             + "\r\n\r\nDeveloper: " + Config::T_AUTHOR_NAME
             + "\r\nContact: " + Config::T_AUTHOR_EMAIL
-            + "\r\n\r\n" + Config::T_CODE_URL + "\r\n";
+            + "\r\n\r\n" + Config::T_WWW + "\r\n";
     msgBox.setText(text.c_str());
     msgBox.exec();
 }

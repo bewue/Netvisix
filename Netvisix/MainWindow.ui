@@ -10,6 +10,12 @@
     <height>612</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="font">
    <font>
     <pointsize>8</pointsize>
@@ -23,8 +29,48 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
+    <item row="1" column="1" colspan="3">
+     <widget class="Netvisix::NetView" name="widgetNetView" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>150</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::RightToLeft</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <widget class="QWidget" name="widgetHostList" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>450</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>450</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
      <widget class="QWidget" name="widgetLegendDisplay" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>138</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>138</width>
@@ -331,32 +377,51 @@
       </widget>
      </widget>
     </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QWidget" name="widget" native="true">
-      <property name="maximumSize">
+    <item row="0" column="0" colspan="5">
+     <widget class="QWidget" name="widgetControlArea" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
        <size>
-        <width>30000</width>
+        <width>0</width>
         <height>25</height>
        </size>
       </property>
-      <property name="font">
-       <font>
-        <pointsize>8</pointsize>
-       </font>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>25</height>
+       </size>
       </property>
-      <widget class="QPushButton" name="buttonStartStopSniffing">
+      <widget class="QPushButton" name="buttonLegend">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>37</width>
-         <height>24</height>
+         <width>35</width>
+         <height>21</height>
         </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>35</width>
+         <height>25</height>
         </size>
        </property>
        <property name="baseSize">
@@ -380,16 +445,28 @@
       <widget class="QPushButton" name="buttonPause">
        <property name="geometry">
         <rect>
-         <x>50</x>
+         <x>80</x>
          <y>0</y>
-         <width>37</width>
-         <height>24</height>
+         <width>35</width>
+         <height>21</height>
         </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>35</width>
+         <height>25</height>
         </size>
        </property>
        <property name="baseSize">
@@ -410,19 +487,31 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="buttonLegend">
+      <widget class="QPushButton" name="buttonStartStopSniffing">
        <property name="geometry">
         <rect>
-         <x>100</x>
+         <x>40</x>
          <y>0</y>
-         <width>37</width>
-         <height>24</height>
+         <width>35</width>
+         <height>21</height>
         </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
          <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>35</width>
+         <height>25</height>
         </size>
        </property>
        <property name="baseSize">
@@ -443,21 +532,54 @@
         <bool>true</bool>
        </property>
       </widget>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="Netvisix::NetView" name="widgetNetView" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>40</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
+      <widget class="QPushButton" name="buttonHostList">
+       <property name="geometry">
+        <rect>
+         <x>950</x>
+         <y>0</y>
+         <width>35</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>35</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>8</pointsize>
+        </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>

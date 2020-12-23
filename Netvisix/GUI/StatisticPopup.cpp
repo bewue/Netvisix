@@ -60,7 +60,7 @@ namespace Netvisix {
         items = new std::vector<StatisticItem*>();
 
         float frameWidth = START_POS_X + 5 * OFFSET_X;
-        float frameHeight = START_POS_Y + 16 * OFFSET_Y + 20;
+        float frameHeight = START_POS_Y + 16 * OFFSET_Y + 5;
         setFixedSize(frameWidth, frameHeight);
 
         // gui layout

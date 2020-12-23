@@ -21,6 +21,7 @@
 #include "NetView.h"
 #include "MainWindow.h"
 #include "ui_HostInfoPopup.h"
+#include "ui_MainWindow.h"
 #include "Net/Host.h"
 #include "Net/NetUtil.h"
 #include "Net/NetEventManager.h"
@@ -32,11 +33,12 @@
 
 namespace Netvisix {
 
-    HostInfoPopup::HostInfoPopup(VisibleHost* vHost, QWidget* parent) :
-            QWidget(parent),
+    HostInfoPopup::HostInfoPopup(Host* host, QPoint triggerPos, MainWindow* mainWindow) :
+            QWidget(mainWindow->getUI()->widgetNetView),
             ui(new Ui::HostInfoPopup) {
 
-        this->vHost = vHost;
+        this->mainWindow    = mainWindow;
+        this->host          = host;
 
         ui->setupUi(this);
 
@@ -50,12 +52,10 @@ namespace Netvisix {
 
         ui->buttonStatistic->setStyleSheet("background-color: rgb(200, 200, 200)");
 
-        QPoint vHostPos = vHost->getPosition().toPoint();
-
-        const std::vector<Tins::IPv4Address> addrListIPv4 = vHost->getHost()->getAddrListIPv4();
-        const std::vector<Tins::IPv6Address> addrListIPv6 = vHost->getHost()->getAddrListIPv6();
+        const std::vector<Tins::IPv4Address> addrListIPv4 = host->getAddrListIPv4();
+        const std::vector<Tins::IPv6Address> addrListIPv6 = host->getAddrListIPv6();
         int addrCount = addrListIPv4.size() + addrListIPv6.size();
-        if (vHost->getHost()->addrHW != NetUtil::zeroAddrHW) {
+        if (host->getAddrHW() != NetUtil::zeroAddrHW) {
             addrCount++;
         }
 
@@ -65,32 +65,31 @@ namespace Netvisix {
 
         float offsetX = 0;
         float offsetY = -height();
-        if (vHostPos.x() + width() > parentWidget()->width()) {
+        if (triggerPos.x() + width() > parentWidget()->width()) {
             offsetX = -width();
         }
-        if (vHostPos.y() - height() < 0) {
+        if (triggerPos.y() - height() < 0) {
             offsetY = 0;
         }
 
-        QPoint pos = vHostPos + QPoint(offsetX, offsetY);
+        QPoint pos = triggerPos + QPoint(offsetX, offsetY);
         move(pos);
 
-        NetView* nv = (NetView*) parent;
-        if (vHost->getHost()->hostname != "") {
-            std::string hostname = "<b>" + vHost->getHost()->hostname + "</b>";
-            if (vHost->getHost()->hostnameFromReverseDNSLookp) {
+        if (host->getHostname() != "") {
+            std::string hostname = "<b>" + host->getHostname() + "</b>";
+            if (host->getHostnameIsFromReverseDNSLookp()) {
                 hostname = "(rDNS) " + hostname;
             }
             ui->labelHostname->setText(hostname.c_str());
         }
-        else if (nv->getReverseDNSLookupEnabled() == false) {
+        else if (mainWindow->getUI()->widgetNetView->getReverseDNSLookupEnabled() == false) {
             ui->labelHostname->setText("(rDNS disabled!)");
         }
 
         // the addresses
         int addrLabelIndex = 0;
-        if (vHost->getHost()->addrHW != NetUtil::zeroAddrHW) {
-            addAddr("HW", vHost->getHost()->addrHW.to_string(), addrLabelIndex, spacerY);
+        if (host->getAddrHW() != NetUtil::zeroAddrHW) {
+            addAddr("HW", host->getAddrHW().to_string(), addrLabelIndex, spacerY);
             addrLabelIndex++;
         }
 
@@ -104,11 +103,15 @@ namespace Netvisix {
             addrLabelIndex++;
         }
 
+        // packet counters
+        ui->labelPacketsSnt->move(ui->labelPacketsSnt->pos().x(), ui->labelPacketsSnt->pos().y() + heightAddition - 10);
+        ui->labelPacketsRcv->move(ui->labelPacketsRcv->pos().x(), ui->labelPacketsRcv->pos().y() + heightAddition - 10);
+
         // byte counters
         ui->labelBytesSnt->move(ui->labelBytesSnt->pos().x(), ui->labelBytesSnt->pos().y() + heightAddition - 10);
         ui->labelBytesRcv->move(ui->labelBytesRcv->pos().x(), ui->labelBytesRcv->pos().y() + heightAddition - 10);
 
-        updateBytes();
+        updateCounters();
 
         // statistic button
         ui->buttonStatistic->move(ui->buttonStatistic->pos().x(), ui->buttonStatistic->pos().y() + heightAddition);
@@ -140,12 +143,18 @@ namespace Netvisix {
         style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     }
 
-    void HostInfoPopup::updateBytes() {
-        unsigned long long bytesSnt = this->vHost->getHost()->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesSnt;
-        unsigned long long bytesRcv = this->vHost->getHost()->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesRcv;
+    void HostInfoPopup::updateCounters() {
+        unsigned long long packetsSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->packetsSnt;
+        unsigned long long packetsRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->packetsRcv;
 
-        ui->labelBytesSnt->setText("Snt: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesSnt).c_str()) + "</b>");
-        ui->labelBytesRcv->setText("Rcv: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesRcv).c_str()) + "</b>");
+        ui->labelPacketsSnt->setText("PcktsSnt: <b>" + QString::number(packetsSnt) + "</b>");
+        ui->labelPacketsRcv->setText("PcktsRcv: <b>" + QString::number(packetsRcv) + "</b>");
+
+        unsigned long long bytesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesSnt;
+        unsigned long long bytesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesRcv;
+
+        ui->labelBytesSnt->setText("BytesSnt: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesSnt).c_str()) + "</b>");
+        ui->labelBytesRcv->setText("BytesRcv: <b>" + QString::fromUtf8(NetUtil::getByteString(bytesRcv).c_str()) + "</b>");
     }
 
     void HostInfoPopup::updateLoop() {
@@ -155,7 +164,7 @@ namespace Netvisix {
         }
 
         if (QDateTime::currentMSecsSinceEpoch() - lastUpdateTime >= 300) {
-            updateBytes();
+            updateCounters();
             lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
         }
     }
@@ -163,19 +172,8 @@ namespace Netvisix {
 } // namespace Netvisix
 
 void Netvisix::HostInfoPopup::on_buttonStatistic_clicked() {
-    Host* host = vHost->getHost();
-    std::string title = "";
+    std::string title = host->getPreferedHostIdentifier();
 
-    if (host->hostname.empty() == false) {
-        title += host->hostname;
-    } else if (host->getAddrListIPv4().empty() == false) {
-        title += host->getAddrListIPv4().at(0).to_string();
-    } else if (host->getAddrListIPv6().empty() == false) {
-        title += host->getAddrListIPv6().at(0).to_string();
-    } else if (host->addrHW != NetUtil::zeroAddrHW) {
-        title += host->addrHW.to_string();
-    }
-
-    StatisticPopup* statisticPopup = new StatisticPopup(vHost->getHost()->statistic, title, parentWidget()->parentWidget()->parentWidget());
+    StatisticPopup* statisticPopup = new StatisticPopup(host->statistic, title, mainWindow);
     statisticPopup->show();
 }

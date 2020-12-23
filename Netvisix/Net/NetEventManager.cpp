@@ -116,8 +116,8 @@ namespace Netvisix {
             if (ni.name() == interfaceName) {
                 Tins::NetworkInterface::Info info = ni.addresses();
                 hostLocalInterface = new Host();
-                hostLocalInterface->addrHW = info.hw_addr;
-                hostLocalInterface->addAddrIPv4(info.ip_addr);
+                hostLocalInterface->setAddrHW(info.hw_addr, false);
+                hostLocalInterface->addAddrIPv4(info.ip_addr, false);
                 return;
             }
         }
@@ -128,7 +128,7 @@ namespace Netvisix {
             return false;
         }
 
-        return (h->addrHW != NetUtil::zeroAddrHW && h->addrHW == hostLocalInterface->addrHW);
+        return (h->getAddrHW() != NetUtil::zeroAddrHW && h->getAddrHW() == hostLocalInterface->getAddrHW());
     }
 
     void NetEventManager::handleNetAreaSubnet(Host* host) {
@@ -137,6 +137,12 @@ namespace Netvisix {
         }
         else {
             host->setNetArea(NetArea::SUBNET);
+        }
+    }
+
+    void NetEventManager::onHostAddrUpdate(Host* host) {
+        for (auto listener : pneListeners) {
+            listener->onHostAddrUpdate(host);
         }
     }
 
@@ -193,7 +199,7 @@ namespace Netvisix {
             if (host->getAddrIPv4(dnsAnswer->ipAddr) != NetUtil::zeroAddrIPv4
                     || host->getAddrIPv6(dnsAnswer->ipAddr) != NetUtil::zeroAddrIPv6) {
 
-                host->hostname = dnsAnswer->hostname;
+                host->setHostname(dnsAnswer->hostname, false);
                 break;
             }
         }
@@ -210,7 +216,7 @@ namespace Netvisix {
     }
 
     void NetEventManager::handleNewPackets(NetEvent* ne) {
-        if (pneListener == nullptr) {
+        if (pneListeners.size() == 0) {
             return;
         }
 
@@ -222,7 +228,9 @@ namespace Netvisix {
             Host* sender = getHost(ne->srcAddrHW, ne->srcAddrIPv4, ne->srcAddrIPv6);
             if (sender != nullptr) {
                 sender->statistic->handleNetEvent(TrafficDirection::TD_OUT, ne);
-                pneListener->onPreparedNetEventNewMulticastPacket(sender, ne);
+                for (auto listener : pneListeners) {
+                    listener->onPreparedNetEventNewMulticastPacket(sender, ne);
+                }
             }
 
             return;
@@ -259,7 +267,9 @@ namespace Netvisix {
             receiver->statistic->handleNetEvent(TrafficDirection::TD_IN, ne);
         }
 
-        pneListener->onPreparedNetEventNewUnicastPacket(sender, receiver, ne);
+        for (auto listener : pneListeners) {
+            listener->onPreparedNetEventNewUnicastPacket(sender, receiver, ne);
+        }
     }
 
     void NetEventManager::addHost(Host *host) {
@@ -267,15 +277,9 @@ namespace Netvisix {
 
         hosts->push_back(host);
 
-        if (pneListener != nullptr) {
-            pneListener->onPreparedNetEventNewHost(host);
+        for (auto listener : pneListeners) {
+            listener->onPreparedNetEventNewHost(host);
         }
-
-//        std::cout << "+++ addHost() : new host added [" << hosts->size() << "]" << std::endl;
-//        for (int i = 0; i < hosts->size(); i++) {
-//            Host* h = hosts->at(i);
-//            std::cout << "[" << i << "] " << h->addrHW << ", " << h->addrIPv4 << ", " << h->addrIPv6 << std::endl;
-//        }
     }
 
     Host* NetEventManager::getHost(Tins::HWAddress<6> hwAddr) {
@@ -284,7 +288,7 @@ namespace Netvisix {
         }
 
         for (Host* h : *hosts) {
-            if (h->addrHW == hwAddr) {
+            if (h->getAddrHW() == hwAddr) {
                 return h;
             }
         }
@@ -378,7 +382,7 @@ namespace Netvisix {
             h = getHost(ne->srcAddrHW);
             if (h == nullptr && getAddrType(ne->srcAddrHW) == AddrType::UNICAST) {
                 Host* nHost = new Host();
-                nHost->addrHW = ne->srcAddrHW;
+                nHost->setAddrHW(ne->srcAddrHW, false);
                 handleNetAreaSubnet(nHost);
                 addHost(nHost);
             }
@@ -386,7 +390,7 @@ namespace Netvisix {
             h = getHost(ne->dstAddrHW);
             if (h == nullptr && getAddrType(ne->dstAddrHW) == AddrType::UNICAST) {
                 Host* nHost = new Host();
-                nHost->addrHW = ne->dstAddrHW;
+                nHost->setAddrHW(ne->dstAddrHW, false);
                 handleNetAreaSubnet(nHost);
                 addHost(nHost);
             }
@@ -420,10 +424,10 @@ namespace Netvisix {
                     // in lan / ip and hw not in list / add new host
                     Host* nHost = new Host();
                     if (addrTypeIP == AddrType::UNICAST) {
-                        nHost->addAddrIPv4(ipv4Addr);
+                        nHost->addAddrIPv4(ipv4Addr, false);
                     }
                     if (addrTypeHW == AddrType::UNICAST) {
-                        nHost->addrHW = hwAddr;
+                        nHost->setAddrHW(hwAddr, false);
                     }
                     handleNetAreaSubnet(nHost);
                     addHost(nHost);
@@ -431,14 +435,14 @@ namespace Netvisix {
                 else {
                     // in lan / hw in list / add ip
                     if (addrTypeIP == AddrType::UNICAST) {
-                        hHW->addAddrIPv4(ipv4Addr);
+                        hHW->addAddrIPv4(ipv4Addr, true);
                     }
                 }
             }
             else if (addrTypeIP == AddrType::UNICAST) {
                 // not in lan / ip not in list (do not handle hw) / add new host
                 Host* nHost = new Host();
-                nHost->addAddrIPv4(ipv4Addr);
+                nHost->addAddrIPv4(ipv4Addr, false);
                 nHost->setNetArea(NetArea::OUTSIDE_SUBNET);
                 addHost(nHost);
             }
@@ -460,10 +464,10 @@ namespace Netvisix {
                     // in lan / ip and hw not in list / add new host
                     Host* nHost = new Host();
                     if (addrTypeIP == AddrType::UNICAST) {
-                        nHost->addAddrIPv6(ipv6Addr);
+                        nHost->addAddrIPv6(ipv6Addr, false);
                     }
                     if (addrTypeHW == AddrType::UNICAST) {
-                        nHost->addrHW = hwAddr;
+                        nHost->setAddrHW(hwAddr, false);
                     }
                     handleNetAreaSubnet(nHost);
                     addHost(nHost);
@@ -471,14 +475,14 @@ namespace Netvisix {
                 else {
                     // in lan / hw in list / add ip
                     if (addrTypeIP == AddrType::UNICAST) {
-                        hHW->addAddrIPv6(ipv6Addr);
+                        hHW->addAddrIPv6(ipv6Addr, true);
                     }
                 }
             }
             else if (addrTypeIP == AddrType::UNICAST) {
                 // not in lan / ip not in list (do not handle hw) / add new host
                 Host* nHost = new Host();
-                nHost->addAddrIPv6(ipv6Addr);
+                nHost->addAddrIPv6(ipv6Addr, false);
                 nHost->setNetArea(NetArea::OUTSIDE_SUBNET);
                 addHost(nHost);
             }

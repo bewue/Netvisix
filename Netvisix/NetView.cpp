@@ -53,7 +53,7 @@ namespace Netvisix {
             visibleLinks->push_back(new VisibleLink(this));
         }
 
-        NetEventManager::SharedInstance()->setPreparedNetEventListener(this);
+        NetEventManager::SharedInstance()->addPreparedNetEventListener(this);
 
         hostInfoPopup = nullptr;
 
@@ -115,7 +115,7 @@ namespace Netvisix {
     void NetView::onPreparedNetEventNewHost(Host* newHost) {
         VisibleHost* newVH = new VisibleHost(this, newHost);
 
-        if (reverseDNSLookupEnabled && newHost->hostname == "") {
+        if (reverseDNSLookupEnabled && newHost->getHostname() == "") {
             reverseDNSLookup(newHost);
         }
 
@@ -150,7 +150,7 @@ namespace Netvisix {
         if (enabled) {
             for (unsigned int i = 0; i < visibleHosts->size(); i++) {
                 VisibleHost* v = visibleHosts->at(i);
-                if (v->getHost()->hostname == "") {
+                if (v->getHost()->getHostname() == "") {
                     reverseDNSLookup(v->getHost());
                 }
             }
@@ -182,8 +182,8 @@ namespace Netvisix {
 
                 if (v->getHost()->getAddrIPv4(hostName) == NetUtil::zeroAddrIPv4
                         && v->getHost()->getAddrIPv6(hostName) == NetUtil::zeroAddrIPv6) {
-                    v->getHost()->hostname = hostName;
-                    v->getHost()->hostnameFromReverseDNSLookp = true;
+                    v->getHost()->setHostname(hostName, true);
+                    v->getHost()->setHostnameIsFromReverseDNSLookp(true);
                 }
 
                 break;
@@ -330,13 +330,13 @@ namespace Netvisix {
         if (hostInfoPopup == nullptr) {
             VisibleHost* vHost = getHostAtPosition(mousePos, true);
             if (vHost != nullptr) {
-                hostInfoPopup = new HostInfoPopup(vHost, this);
+                hostInfoPopup = new HostInfoPopup(vHost->getHost(), vHost->getPosition().toPoint(), (MainWindow*) parentWidget()->parentWidget());
                 hostInfoPopup->show();
             }
         }
         else {
             VisibleHost* vHost = getHostAtPosition(mousePos, false);
-            if (hostInfoPopup->geometry().contains(mousePos) == false && (vHost == nullptr || vHost != hostInfoPopup->getHost())) {
+            if (hostInfoPopup->geometry().contains(mousePos) == false && (vHost == nullptr || vHost != getVisibleHost(hostInfoPopup->getHost()))) {
                 hostInfoPopup->close();
                 hostInfoPopup = nullptr;
             }

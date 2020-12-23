@@ -102,7 +102,7 @@ namespace Netvisix {
     }
 
     void VisibleHost::showHostAliveEffect() {
-        if (! isVisible) {
+        if (! getIsVisible()) {
             setPosition(targetPos);
         }
         visibleTimer    = 0;
@@ -114,7 +114,7 @@ namespace Netvisix {
     }
 
     void VisibleHost::onVisibleUpdate(quint64 dt) {
-        if (! isVisible) {
+        if (! getIsVisible()) {
             return;
         }
 
@@ -162,7 +162,7 @@ namespace Netvisix {
     }
 
     void VisibleHost::onVisiblePaint(QPainter& painter) {
-        if (! isVisible) {
+        if (! getIsVisible()) {
             return;
         }
 

@@ -26,7 +26,7 @@ namespace Netvisix {
 
     Host::Host() {
         hostname = "";
-        hostnameFromReverseDNSLookp = false;
+        hostnameIsFromReverseDNSLookp = false;
 
         addrHW = Tins::HWAddress<6>("00:00:00:00:00:00");
         netArea = NetArea::UNKOWN;
@@ -43,9 +43,26 @@ namespace Netvisix {
 //        return s;
 //    }
 
-    void Host::addAddrIPv4(Tins::IPv4Address ipv4) {
+    void Host::setAddrHW(Tins::HWAddress<6> hw, bool update) {
+        this->addrHW = hw;
+        if (update) {
+            onAddrUpdate();
+        }
+    }
+
+    void Host::setHostname(const std::string& hostname, bool update) {
+        this->hostname = hostname;
+        if (update) {
+            onAddrUpdate();
+        }
+    }
+
+    void Host::addAddrIPv4(Tins::IPv4Address ipv4, bool update) {
         if (ipv4 != NetUtil::zeroAddrIPv4) {
             addrListIPv4.push_back(ipv4);
+            if (update) {
+                onAddrUpdate();
+            }
         }
     }
 
@@ -68,9 +85,12 @@ namespace Netvisix {
         return NetUtil::zeroAddrIPv4;
     }
 
-    void Host::addAddrIPv6(Tins::IPv6Address ipv6) {
+    void Host::addAddrIPv6(Tins::IPv6Address ipv6, bool update) {
         if (ipv6 != NetUtil::zeroAddrIPv6) {
             addrListIPv6.push_back(ipv6);
+            if (update) {
+                onAddrUpdate();
+            }
         }
     }
 
@@ -91,6 +111,24 @@ namespace Netvisix {
         }
 
         return NetUtil::zeroAddrIPv6;
+    }
+
+    void Host::onAddrUpdate() {
+        NetEventManager::SharedInstance()->onHostAddrUpdate(this);
+    }
+
+    std::string Host::getPreferedHostIdentifier() {
+        if (hostname.empty() == false) {
+            return hostname;
+        } else if (addrListIPv4.empty() == false) {
+            return addrListIPv4.at(0).to_string();
+        } else if (addrListIPv6.empty() == false) {
+            return addrListIPv6.at(0).to_string();
+        } else if (addrHW != NetUtil::zeroAddrHW) {
+            return addrHW.to_string();
+        } else {
+            return "";
+        }
     }
 
 } // namespace Netvisix

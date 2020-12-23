@@ -20,6 +20,9 @@
 #ifndef HOSTINFOPOPUP_H
 #define HOSTINFOPOPUP_H
 
+#include "Net/Host.h"
+#include "GUI/MainWindow.h"
+
 #include <QWidget>
 
 namespace Ui {
@@ -28,15 +31,13 @@ class HostInfoPopup;
 
 namespace Netvisix {
 
-    class VisibleHost;
-
     class HostInfoPopup : public QWidget {
 
         public:
-            explicit HostInfoPopup(VisibleHost* vHost, QWidget* parent = 0);
+            explicit HostInfoPopup(Host* host, QPoint triggerPos, MainWindow* mainWindow);
             ~HostInfoPopup();
 
-            VisibleHost* getHost() { return this->vHost; }
+            Host* getHost() { return this->host; }
 
         protected:
             void paintEvent(QPaintEvent* event);
@@ -50,14 +51,16 @@ namespace Netvisix {
 
             void addAddr(const std::string& type, const std::string& addr, int addrLabelIndex, int spacerY);
 
-            void updateBytes();
+            void updateCounters();
 
             QTimer* timer;
             quint64 lastUpdateTime;
 
             Ui::HostInfoPopup *ui;
 
-            VisibleHost* vHost;
+            Host* host;
+
+            MainWindow* mainWindow;
     };
 
 } // namespace Netvisix
