@@ -34,10 +34,13 @@ namespace Netvisix {
     class HostInfoPopup : public QWidget {
 
         public:
-            explicit HostInfoPopup(Host* host, QPoint triggerPos, MainWindow* mainWindow);
+            explicit HostInfoPopup(Host* host, MainWindow* mainWindow);
             ~HostInfoPopup();
 
             Host* getHost() { return this->host; }
+
+            void setPositionOnVisibleHost(QPoint hostPos);
+            void setPositionOnHostListItem(QPoint mousePos);
 
         protected:
             void paintEvent(QPaintEvent* event);

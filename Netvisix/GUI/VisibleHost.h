@@ -50,6 +50,8 @@ namespace Netvisix {
 
             bool getIsVisible() { return this->isVisible || this->isMarked; }
 
+            bool getIsAlive() { return aliveEffectActive; }
+
         private:
             struct MulticastEffectData {
                 bool isActive = false;

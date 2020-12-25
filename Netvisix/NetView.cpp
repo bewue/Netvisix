@@ -330,7 +330,8 @@ namespace Netvisix {
         if (hostInfoPopup == nullptr) {
             VisibleHost* vHost = getHostAtPosition(mousePos, true);
             if (vHost != nullptr) {
-                hostInfoPopup = new HostInfoPopup(vHost->getHost(), vHost->getPosition().toPoint(), (MainWindow*) parentWidget()->parentWidget());
+                hostInfoPopup = new HostInfoPopup(vHost->getHost(), (MainWindow*) parentWidget()->parentWidget());
+                hostInfoPopup->setPositionOnVisibleHost(vHost->getPosition().toPoint());
                 hostInfoPopup->show();
             }
         }

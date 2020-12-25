@@ -24,6 +24,10 @@
 
 #include <QWidget>
 #include <QTableWidget>
+#include <QCheckBox>
+
+#include <set>
+#include <mutex>
 
 
 namespace Netvisix {
@@ -39,29 +43,39 @@ namespace Netvisix {
             ~HostList();
 
             virtual void onPreparedNetEventNewHost(Host* newHost);
-            virtual void onPreparedNetEventNewUnicastPacket(Host* sender, Host* receiver, NetEvent* netEvent) {}
-            virtual void onPreparedNetEventNewMulticastPacket(Host* sender, NetEvent* netEvent) {}
-            virtual void onHostAddrUpdate(Host* host) {}
+            virtual void onPreparedNetEventNewUnicastPacket(Host* sender, Host* receiver, NetEvent* netEvent);
+            virtual void onPreparedNetEventNewMulticastPacket(Host* sender, NetEvent* netEvent);
+            virtual void onHostAddrUpdate(Host* host);
 
             void reset();
 
-            void onUpdate(quint64 dt);
-
         private slots:
             void tableCellEntered(int row, int column);
+            void updateLoop();
 
         private:
             Host* getHostPointer(int row);
 
-            void updateHostListItem(int row);
+            void addNewHostListItems();
+
+            void updateAllHostListItems(bool force);
+
+            void updateHostListItem(int row, bool force);
 
             MainWindow* mainWindow;
 
             QTableWidget* tableWidget;
 
-            float updateTimer;
+            quint64 lastUpdateTime;
 
             HostInfoPopup* hostInfoPopup;
+
+            QCheckBox* cbShowAll;
+
+            std::vector<Host*> newHosts;
+            std::set<Host*> hostsToUpdate;
+
+            //std::mutex mutex;
     };
 
 } // namespace Netvisix

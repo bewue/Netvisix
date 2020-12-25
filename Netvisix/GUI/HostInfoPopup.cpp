@@ -33,7 +33,7 @@
 
 namespace Netvisix {
 
-    HostInfoPopup::HostInfoPopup(Host* host, QPoint triggerPos, MainWindow* mainWindow) :
+    HostInfoPopup::HostInfoPopup(Host* host, MainWindow* mainWindow) :
             QWidget(mainWindow->getUI()->widgetNetView),
             ui(new Ui::HostInfoPopup) {
 
@@ -41,6 +41,8 @@ namespace Netvisix {
         this->host          = host;
 
         ui->setupUi(this);
+
+        lastUpdateTime = 0;
 
         timer = new QTimer();
         QObject::connect(timer, SIGNAL(timeout()), this, SLOT(updateLoop()));
@@ -62,18 +64,6 @@ namespace Netvisix {
         const int spacerY = 4;
         const int heightAddition = addrCount * (ui->labelAddr->height() + spacerY) + 25;
         resize(width(), height() + heightAddition);
-
-        float offsetX = 0;
-        float offsetY = -height();
-        if (triggerPos.x() + width() > parentWidget()->width()) {
-            offsetX = -width();
-        }
-        if (triggerPos.y() - height() < 0) {
-            offsetY = 0;
-        }
-
-        QPoint pos = triggerPos + QPoint(offsetX, offsetY);
-        move(pos);
 
         if (host->getHostname() != "") {
             std::string hostname = "<b>" + host->getHostname() + "</b>";
@@ -121,6 +111,27 @@ namespace Netvisix {
 
     HostInfoPopup::~HostInfoPopup() {
         delete ui;
+    }
+
+    void HostInfoPopup::setPositionOnVisibleHost(QPoint hostPos) {
+        float offsetX = 0;
+        float offsetY = -height();
+        if (hostPos.x() + width() > parentWidget()->width()) {
+            offsetX = -width();
+        }
+        if (hostPos.y() - height() < 0) {
+            offsetY = 0;
+        }
+
+        move(hostPos + QPoint(offsetX, offsetY));
+    }
+
+    void HostInfoPopup::setPositionOnHostListItem(QPoint mousePos) {
+        int posY = mousePos.y() - height();
+        posY = std::min(posY, parentWidget()->height() - height());
+        posY = std::max(posY, 0);
+
+        move(QPoint(parentWidget()->width() - width(), posY));
     }
 
     void HostInfoPopup::addAddr(const std::string& type, const std::string& addr, int addrLabelIndex, int spacerY) {

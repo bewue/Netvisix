@@ -115,8 +115,6 @@ namespace Netvisix {
 
         ui->widgetNetView->onUpdate(dt);
 
-        hostList->onUpdate(dt);
-
         statusbarDisplay->updateStatusbar(dt);
     }
 

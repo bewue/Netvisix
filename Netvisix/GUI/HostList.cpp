@@ -27,6 +27,7 @@
 #include "Net/NetStatistic.h"
 #include "Net/Host.h"
 #include "GUI/HostInfoPopup.h"
+#include "GUI/VisibleHost.h"
 
 #include <QtWidgets>
 
@@ -38,20 +39,14 @@ namespace Netvisix {
 
         tableWidget = new QTableWidget();
         tableWidget->verticalHeader()->setVisible(false);
+        tableWidget->setSelectionMode(QAbstractItemView::NoSelection);
         tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 
         tableWidget->setColumnCount(4);
         tableWidget->setColumnHidden(3, true);
 
         tableWidget->setMouseTracking(true);
         connect(tableWidget, SIGNAL(cellEntered(int, int)), this, SLOT(tableCellEntered(int, int)));
-
-        // color
-        QPalette palette = tableWidget->palette();
-        palette.setBrush(QPalette::Highlight, QBrush(Qt::white));
-        palette.setBrush(QPalette::HighlightedText, QBrush(Qt::black));
-        tableWidget->setPalette(palette);
 
         // table header
         QStringList headerLables;
@@ -69,22 +64,38 @@ namespace Netvisix {
 
         NetEventManager::SharedInstance()->addPreparedNetEventListener(this);
 
-        updateTimer = 0;
-
         hostInfoPopup = nullptr;
+
+        cbShowAll = mainWindow->getUI()->widgetHostListControls->findChild<QCheckBox*>("cbShowAll");
+
+        lastUpdateTime = 0;
+
+        QTimer* timer = new QTimer();
+        QObject::connect(timer, SIGNAL(timeout()), this, SLOT(updateLoop()));
+        timer->start();
+
+        newHosts        = std::vector<Host*>();
+        hostsToUpdate   = std::set<Host*>();
     }
 
     HostList::~HostList() {
     }
 
     void HostList::onPreparedNetEventNewHost(Host* newHost) {
-        tableWidget->insertRow(tableWidget->rowCount());
-        int index = tableWidget->rowCount() - 1;
+        newHosts.push_back(newHost);
+    }
 
-        QTableWidgetItem* item = new QTableWidgetItem();
-        qulonglong hostPointer = reinterpret_cast<qulonglong>(newHost);
-        item->setData(Qt::UserRole, hostPointer);
-        tableWidget->setItem(index, 3, item);
+    void HostList::onPreparedNetEventNewUnicastPacket(Host* sender, Host* receiver, NetEvent* netEvent) {
+        hostsToUpdate.insert(sender);
+        hostsToUpdate.insert(receiver);
+    }
+
+    void HostList::onPreparedNetEventNewMulticastPacket(Host* sender, NetEvent* netEvent) {
+        hostsToUpdate.insert(sender);
+    }
+
+    void HostList::onHostAddrUpdate(Host* host) {
+        hostsToUpdate.insert(host);
     }
 
     void HostList::reset() {
@@ -98,34 +109,86 @@ namespace Netvisix {
         return host;
     }
 
-    void HostList::updateHostListItem(int row) {
-        Host* host = getHostPointer(row);
+    void HostList::addNewHostListItems() {
+        for (auto it = newHosts.begin(); it != newHosts.end();) {
+            tableWidget->insertRow(tableWidget->rowCount());
+            int index = tableWidget->rowCount() - 1;
 
-        unsigned long long framesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesSnt;
-        unsigned long long framesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesRcv;
+            QTableWidgetItem* item = new QTableWidgetItem();
+            qulonglong hostPointer = reinterpret_cast<qulonglong>(*it);
+            item->setData(Qt::UserRole, hostPointer);
+            tableWidget->setItem(index, 3, item);
 
-        unsigned long long bytesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesSnt;
-        unsigned long long bytesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesRcv;
+            updateHostListItem(index, true);
 
-        tableWidget->setItem(row, 0, new QTableWidgetItem(host->getPreferedHostIdentifier().c_str()));
-
-        QTableWidgetItem* itemPackets = new QTableWidgetItem();
-        itemPackets->setData(Qt::EditRole, framesSnt + framesRcv);
-        tableWidget->setItem(row, 1, itemPackets);
-
-        tableWidget->setItem(row, 2, new QTableWidgetItem(QString::fromUtf8(NetUtil::getByteString(bytesSnt + bytesRcv).c_str())));
-
-        tableWidget->sortByColumn(1, Qt::DescendingOrder);
+            it = newHosts.erase(it);
+        }
     }
 
-    void HostList::onUpdate(quint64 dt) {
-        updateTimer += dt;
-        if (updateTimer >= 300) {
-            for (int i = 0; i < tableWidget->rowCount(); i++) {
-                updateHostListItem(i);
+    void HostList::updateHostListItem(int row, bool force) {
+        Host* host = getHostPointer(row);
+
+        bool updateAllData = true;
+        if (! force) {
+            auto hostToUpdateIt = hostsToUpdate.find(host);
+            if (hostToUpdateIt != hostsToUpdate.end()) {
+                hostsToUpdate.erase(hostToUpdateIt);
+            }
+            else {
+                updateAllData = false;
+            }
+        }
+
+        VisibleHost* vHost = mainWindow->getUI()->widgetNetView->getVisibleHost(host);
+
+        QColor bgColor = Qt::yellow;
+
+        if (! vHost->getIsAlive()) {
+            bgColor = Qt::white;
+
+            if (! cbShowAll->isChecked()) {
+                tableWidget->hideRow(row);
+                return;
+            }
+        }
+
+        tableWidget->showRow(row);
+
+        if (updateAllData) {
+            unsigned long long framesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesSnt;
+            unsigned long long framesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->framesRcv;
+
+            unsigned long long bytesSnt = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesSnt;
+            unsigned long long bytesRcv = host->statistic->getItem(IPVersion::ALL, Protocol::EthernetII)->bytesRcv;
+
+            std::string hostname = host->getPreferedHostIdentifier();
+            const int maxChars = 22;
+            if (hostname.size() > maxChars) {
+                hostname = hostname.substr(0, maxChars) + "…";
             }
 
-            updateTimer = 0;
+            QTableWidgetItem* itemHost = new QTableWidgetItem(hostname.c_str());
+            tableWidget->setItem(row, 0, itemHost);
+
+            QTableWidgetItem* itemPackets = new QTableWidgetItem();
+            itemPackets->setData(Qt::EditRole, framesSnt + framesRcv);
+            tableWidget->setItem(row, 1, itemPackets);
+
+            QTableWidgetItem* itemBytes = new QTableWidgetItem(QString::fromUtf8(NetUtil::getByteString(bytesSnt + bytesRcv).c_str()));
+            tableWidget->setItem(row, 2, itemBytes);
+        }
+
+        tableWidget->item(row, 0)->setBackground(bgColor);
+        tableWidget->item(row, 1)->setBackground(bgColor);
+        tableWidget->item(row, 2)->setBackground(bgColor);
+    }
+
+    void HostList::updateLoop() {
+        addNewHostListItems();
+
+        if (QDateTime::currentMSecsSinceEpoch() - lastUpdateTime >= 300) {
+            updateAllHostListItems(false);
+            lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
         }
 
         if (hostInfoPopup != nullptr) {
@@ -149,9 +212,17 @@ namespace Netvisix {
         }
 
         if (hostInfoPopup == nullptr) {
-            QPoint mousePos = mainWindow->mapFromGlobal(QCursor::pos());
-            hostInfoPopup = new HostInfoPopup(host, QPoint(mainWindow->getUI()->widgetNetView->width(), mousePos.y()), mainWindow);
+            hostInfoPopup = new HostInfoPopup(host, mainWindow);
+            hostInfoPopup->setPositionOnHostListItem(mainWindow->mapFromGlobal(QCursor::pos()));
             hostInfoPopup->show();
         }
+    }
+
+    void HostList::updateAllHostListItems(bool force) {
+        for (int i = 0; i < tableWidget->rowCount(); i++) {
+            updateHostListItem(i, force);
+        }
+
+        tableWidget->sortByColumn(1, Qt::DescendingOrder);
     }
 }
