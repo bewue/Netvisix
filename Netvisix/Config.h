@@ -21,6 +21,9 @@
 #define CONFIG_H
 
 
+#include <QWidget>
+
+
 namespace Netvisix {
     namespace Config {
 
@@ -31,6 +34,53 @@ namespace Netvisix {
         static const std::string T_AUTHOR_EMAIL         = "bitbatzen@gmail.com";
         static const std::string T_WWW                  = "https://github.com/bewue/Netvisix";
 
-    } // namespace Config
+
+        enum class ThemeID {
+            Light,
+            Dark,
+        };
+
+        class Theme {
+
+            public:
+                Theme(ThemeID themeID);
+                virtual ~Theme();
+
+                ThemeID themeID;
+
+                QColor bgColor;
+                QColor lanAreaColor;
+                QColor lanAreaOutlineColor;
+
+                QColor hostActiveColor;
+                QColor hostInactiveColor;
+                QColor hostOutlineColor;
+                QColor hostLocalInterfaceMarkerColor;
+
+                QColor packetOutlineColor;
+
+                QColor linkColor;
+        };
+
+
+        class Settings {
+
+            public:
+                virtual ~Settings();
+                static Settings* SharedInstance();
+
+                static void release();
+
+                void reset();
+
+                Theme* theme;
+
+            private:
+                Settings();
+
+                static Settings* instance;
+        };
+
+} // namespace Config
 } // namespace Netvisix
 #endif // CONFIG_H

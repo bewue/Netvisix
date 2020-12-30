@@ -44,6 +44,8 @@ namespace Netvisix {
             QMainWindow(parent),
             ui(new Ui::MainWindow) {
 
+        Config::Settings::SharedInstance()->theme = new Config::Theme(Config::ThemeID::Dark);
+
         QFont font = QFontDatabase::systemFont(QFontDatabase::FixedFont);
         font.setPointSize(MainWindow::FONT_SIZE);
         QApplication::setFont(font);

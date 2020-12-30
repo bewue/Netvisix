@@ -141,7 +141,7 @@ namespace Netvisix {
         int typePosX = ui->labelAddr->pos().x();
         labelType->move(typePosX, posY);
 
-        QLabel* labelAddr = new QLabel(addr.c_str(), this);
+        QLabel* labelAddr = new QLabel(std::string("<b>" + addr + "</b>").c_str(), this);
         labelAddr->setTextInteractionFlags(Qt::TextSelectableByMouse);
         int addrPosX = ui->labelAddrField->pos().x();
         labelAddr->move(addrPosX, posY);

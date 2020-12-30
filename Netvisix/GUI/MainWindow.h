@@ -95,7 +95,7 @@ namespace Netvisix {
         float widgetHostListWidth;
 
 #ifdef Q_OS_WIN
-        const float FONT_SIZE = 9;
+        const float FONT_SIZE = 8;
 #else
         const float FONT_SIZE = 9;
 #endif

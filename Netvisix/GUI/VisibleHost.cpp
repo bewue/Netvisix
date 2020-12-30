@@ -19,6 +19,7 @@
 
 #include "VisibleHost.h"
 #include "NetView.h"
+#include "Config.h"
 #include "Net/NetEventManager.h"
 #include "Net/NetEvent.h"
 #include "Net/Host.h"
@@ -34,10 +35,12 @@ namespace Netvisix {
     VisibleHost::VisibleHost(NetView* netView, Host* host) : VisibleBase(netView) {
         this->host = host;
 
-        color = QColor(160, 160, 160, 255);
+        Config::Theme* theme = Config::Settings::SharedInstance()->theme;
+
+        color = theme->hostInactiveColor;
         brush = QBrush(color, Qt::BrushStyle::SolidPattern);
 
-        colorAliveEffect = QColor(110, 110, 130, 255);
+        colorAliveEffect = theme->hostActiveColor;
         brushAliveEffect = QBrush(colorAliveEffect, Qt::BrushStyle::SolidPattern);
         aliveEffectTimer = 0;
         aliveEffectActive = true;
@@ -45,7 +48,7 @@ namespace Netvisix {
         isMarked = false;
         brushMarked = QBrush(Qt::green, Qt::BrushStyle::SolidPattern);
 
-        colorLocalInterfaceMarker = QColor(190, 190, 190, 255);
+        colorLocalInterfaceMarker = theme->hostLocalInterfaceMarkerColor;
 
         visibleTimer    = 0;
         isVisible       = true;

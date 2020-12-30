@@ -18,13 +18,15 @@
  */
 
 #include "VisibleLink.h"
+#include "Config.h"
 #include "GUI/VisibleHost.h"
 
 
 namespace Netvisix {
 
     VisibleLink::VisibleLink(NetView* netView) : VisibleBase(netView) {
-        color = QColor(200, 200, 200, 255);
+        Config::Theme* theme = Config::Settings::SharedInstance()->theme;
+        color = theme->linkColor;
         isActive = false;
     }
 

@@ -18,6 +18,7 @@
  */
 
 #include "NetView.h"
+#include "Config.h"
 #include "Net/NetUtil.h"
 #include "Net/NetEventManager.h"
 #include "Net/Host.h"
@@ -34,11 +35,14 @@ namespace Netvisix {
 
     NetView::NetView(QWidget *parent) : QWidget(parent) {
         QPalette Pal(palette());
-        Pal.setColor(QPalette::Background, QColor(160, 160, 160, 255));
+
+        Config::Theme* theme = Config::Settings::SharedInstance()->theme;
+
+        Pal.setColor(QPalette::Background, theme->bgColor);
         setAutoFillBackground(true);
         setPalette(Pal);
 
-        lanAreaBrush = QBrush(QColor(170, 170, 170, 255), Qt::BrushStyle::SolidPattern);
+        lanAreaBrush = QBrush(theme->lanAreaColor, Qt::BrushStyle::SolidPattern);
         updateLanAreaRect();
 
         visibleHosts = new std::vector<VisibleHost*>();
@@ -473,7 +477,9 @@ namespace Netvisix {
     void NetView::paintEvent(QPaintEvent *event) {
         QPainter painter(this);
 
-        painter.setPen(QColor(180, 180, 180, 255));
+        Config::Theme* theme = Config::Settings::SharedInstance()->theme;
+
+        painter.setPen(theme->lanAreaOutlineColor);
 
         // lan area
         painter.setBrush(lanAreaBrush);
@@ -489,7 +495,7 @@ namespace Netvisix {
             }
         }
 
-        painter.setPen(QColor(80, 80, 80, 255));
+        painter.setPen(theme->packetOutlineColor);
 
         // visiblePackets
         unsigned int visiblePacketsCount = visiblePackets->size();
@@ -498,7 +504,7 @@ namespace Netvisix {
              v->onVisiblePaint(painter);
         }
 
-        painter.setPen(QColor(100, 100, 100, 255));
+        painter.setPen(theme->hostOutlineColor);
 
         // visibleHosts
         unsigned int visibleHostsCount = visibleHosts->size();

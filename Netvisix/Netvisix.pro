@@ -12,6 +12,7 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += main.cpp\
+    Config.cpp \
     GUI/HostList.cpp \
     GUI/MainWindow.cpp \
     GUI/StartCapturePopup.cpp \
