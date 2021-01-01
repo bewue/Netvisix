@@ -1,5 +1,5 @@
 # Netvisix
-Netvisix listens on your local network interface and visualizes the network packet flow between hosts.
+Netvisix listens on your local network interface and visualizes the network packet flow between hosts. There are binary packages for windows and linux.
 
 Feature requests and bug reports are welcome.
 
@@ -24,4 +24,4 @@ Build it by yourself or download the ![latest](https://github.com/bewue/Netvisix
     make
 
 ## Screenshot
-![](https://github.com/bewue/Misc/blob/main/Pictures/Netvisix.png)
+![](https://github.com/bewue/Misc/blob/main/Pictures/Netvisix-1.4.0.png)
