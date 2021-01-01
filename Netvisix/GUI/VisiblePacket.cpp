@@ -73,14 +73,14 @@ namespace Netvisix {
             case Protocol::ARP:
                 return Qt::black;
             case Protocol::ICMP:
-                return QColor(250, 250, 50, 255);
+                return QColor(210, 210, 0, 255);
             case Protocol::ICMPv6:
-                return QColor(250, 250, 50, 255);
+                return QColor(210, 210, 0, 255);
 
             case Protocol::TCP:
-                return QColor(110, 180, 255, 255);
+                return QColor(0, 100, 200, 255);
             case Protocol::UDP:
-                return QColor(60, 230, 60, 255);
+                return QColor(20, 120, 20, 255);
 
             default:
                 return Qt::white;
