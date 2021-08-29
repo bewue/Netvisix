@@ -75,7 +75,7 @@ win32: DEFINES += WIN32_LEAN_AND_MEAN
 win32: INCLUDEPATH += $$PWD\..\libtins-win\include
 win32: LIBS += -L$$PWD\..\libtins-win -ltins
 
-win32: INCLUDEPATH += C:\Users\benjamin\Documents\Build\4.1.2-WpdPack\WpdPack\Include
-win32: LIBS += -LC:\Users\benjamin\Documents\Build\4.1.2-WpdPack\WpdPack\Lib -lwpcap
+win32: INCLUDEPATH += C:\Users\benjamin\Documents\Build\npcap-sdk-1.10\Include
+win32: LIBS += -LC:\Users\benjamin\Documents\Build\npcap-sdk-1.10\Lib -lwpcap
 
 win32: LIBS += -lws2_32 -liphlpapi

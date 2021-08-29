@@ -5,7 +5,7 @@ Feature requests and bug reports are welcome.
 
 Netvisix is using the following libraries:  
 - libtins   
-- libpcap/WinPcap (used by libtins)   
+- libpcap/Npcap (used by libtins)
 - Qt5
 
 ## Installation

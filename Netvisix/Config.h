@@ -28,7 +28,7 @@ namespace Netvisix {
     namespace Config {
 
         static const std::string T_APP_NAME             = "Netvisix";
-        static const std::string T_APP_VERSION          = "1.4.0";
+        static const std::string T_APP_VERSION          = "1.4.1";
         static const std::string T_APP_LICENSE          = "GPLv3";
         static const std::string T_AUTHOR_NAME          = "Benjamin W.";
         static const std::string T_AUTHOR_EMAIL         = "bitbatzen@gmail.com";

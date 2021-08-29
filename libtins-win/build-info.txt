@@ -1,6 +1,6 @@
 Current build:
 - libtins v4.3
-- WinPCAP (Developer's Pack) v4.1.2
+- npcap-sdk-1.10
 - Build with MinGW 8.1.0 32-bit (Installed via Qt MaintenanceTool)
 
 libtins MinGW build fix 1 (build error with ppi.h)
@@ -11,7 +11,7 @@ Missing in MinGW. InetPtonA (#ifdef _MSC_VER) seems to work with MinGW, too.
 
 libtins MinGW static build:
 (http://libtins.github.io/download/#compiling-windows)
-cmake ../ -DLIBTINS_BUILD_SHARED=0 -DLIBTINS_ENABLE_CXX11=0 -DLIBTINS_ENABLE_WPA2=0 -DPCAP_ROOT_DIR=<WinPcap_Dev_Pack> -G "MinGW Makefiles" -DLIBTINS_ENABLE_DOT11=0
+cmake ../ -DLIBTINS_BUILD_SHARED=0 -DLIBTINS_ENABLE_CXX11=0 -DLIBTINS_ENABLE_WPA2=0 -DPCAP_ROOT_DIR=<npcap-sdk-dir> -G "MinGW Makefiles" -DLIBTINS_ENABLE_DOT11=0
 cmake --build .
 
 To get all dependencies of Netvisix for the deployment move the .exe file to a empty directory and run:
