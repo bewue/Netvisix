@@ -1,4 +1,6 @@
 # Netvisix
+[![GitHub repo size](https://img.shields.io/github/repo-size/bewue/Netvisix)](https://github.com/bewue/Netvisix)
+
 Netvisix listens on your local network interface and visualizes the network packet flow between hosts. There are binary packages for windows and linux.
 
 Feature requests and bug reports are welcome.
